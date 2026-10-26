@@ -8,6 +8,8 @@ Visor en español con ingredientes → proceso → productos, búsqueda, histori
 
 ## Ver el diagrama
 
+[**Abrir el diagrama en el navegador**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
+
 Descarga el paquete de la sección Releases, extráelo y abre `index.html` en un navegador moderno. Funciona sin conexión y no necesita servidor. GitHub muestra el código de los archivos HTML; usa la descarga para abrir el visor.
 
 - **Por receta:** pulsa un ingrediente para seguir su fabricación.
