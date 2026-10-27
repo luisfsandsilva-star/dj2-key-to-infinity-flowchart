@@ -12,7 +12,7 @@ Cards, ingredient chains and search results display embedded pack texture previe
 
 [**Open the diagram in your browser**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
 
-Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r10), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
+Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r11), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
 
 - **By recipe:** select an ingredient to follow its crafting chain.
 - **Expandable chain:** open only the branches you want to inspect.
@@ -47,3 +47,5 @@ The protected narrative note is excluded. Mods, worlds, game logs and personal c
 - `README.txt`: usage instructions and scope.
 
 Original pack: [Divine Journey 2, version 2.23.4](https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4). Mod names and content belong to their respective authors.
+
+Map labels and icons remain visible down to 18% zoom. Connections for the selected node remain visible at every zoom level; selecting a node above that detail threshold preserves the current zoom.
