@@ -30,11 +30,11 @@
   },
   "catalogResources": 42267,
   "catalogRecipes": 36964,
-  "viewerSha256": "40c350d670a6fa6f8870d9344e59aa123dc5c957a3fdf0ec761b92d44c5a1d3d",
-  "dataSha256": "eda0af0ed29d9828ece0e4fa2f270b34cd7b2760e077cf2b215994bce20f65c1",
+  "viewerSha256": "a13a9d005e6b2e6a2f58909af75c0a83b42f149ee58636dc529e7ca9a705c842",
+  "dataSha256": "dcf02fc847869341944e655c71c76720865fbcc943bb03dab1449339567458d2",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "iconAnimation": {
-    "uniqueAnimations": 416,
+    "uniqueAnimations": 812,
     "staticFallback": true,
     "visibleIconsOnly": true,
     "motionToggle": true
@@ -42,8 +42,9 @@
   "iconCoverage": {
     "resourceDenominator": 42267,
     "resourceCoverage": {
-      "fallback": 24193,
-      "asset": 18074
+      "fallback": 15869,
+      "asset": 24531,
+      "representative": 1867
     },
     "machineDenominator": 299,
     "fallbackIsExplicit": true,

@@ -8,6 +8,8 @@ The viewer and search are in English. Verified pack texture previews appear wher
 
 Animate icons toggles animated textures in cards, search and the map. A visible static frame is always available. Only visible icons animate; reduced-motion preferences start with animation off.
 
+OR candidate previews carry an OR badge. Some state-dependent or custom-rendered entries use labeled base texture previews. Unknown or protected entries retain explicit type symbols.
+
 Status: Work in progress. 49 dependencies awaiting verification.
 Selected route: 4748 resources and 2007 recipes.
 Quantities belong to each recipe; they are not an accumulated total cost.
