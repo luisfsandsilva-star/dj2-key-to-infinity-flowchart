@@ -30,14 +30,20 @@
   },
   "catalogResources": 42267,
   "catalogRecipes": 36964,
-  "viewerSha256": "cd823a582807e4977600a99919574b0ff33473354c9b53ecebec64325c1d646e",
-  "dataSha256": "a9b00c623604b950225297423082c2ad3df7228d4038396062de6b29011a1535",
+  "viewerSha256": "40c350d670a6fa6f8870d9344e59aa123dc5c957a3fdf0ec761b92d44c5a1d3d",
+  "dataSha256": "eda0af0ed29d9828ece0e4fa2f270b34cd7b2760e077cf2b215994bce20f65c1",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
+  "iconAnimation": {
+    "uniqueAnimations": 416,
+    "staticFallback": true,
+    "visibleIconsOnly": true,
+    "motionToggle": true
+  },
   "iconCoverage": {
     "resourceDenominator": 42267,
     "resourceCoverage": {
-      "asset": 18107,
-      "fallback": 24160
+      "fallback": 24193,
+      "asset": 18074
     },
     "machineDenominator": 299,
     "fallbackIsExplicit": true,

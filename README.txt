@@ -6,6 +6,8 @@ Expandable chain: open only the branches you want to inspect.
 Overview map: zoom, pan and select; Open recipe shows the details.
 The viewer and search are in English. Verified pack texture previews appear where available; other entries use explicit type symbols.
 
+Animate icons toggles animated textures in cards, search and the map. A visible static frame is always available. Only visible icons animate; reduced-motion preferences start with animation off.
+
 Status: Work in progress. 49 dependencies awaiting verification.
 Selected route: 4748 resources and 2007 recipes.
 Quantities belong to each recipe; they are not an accumulated total cost.

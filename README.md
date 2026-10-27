@@ -6,13 +6,15 @@ An English viewer with ingredients → process → products, search, navigation 
 
 Cards, ingredient chains and search results display embedded pack texture previews where the item, variant or fluid mapping has been verified. Other entries use explicit type symbols. A texture preview is a visual aid, not proof that a resource is obtainable; icon coverage is reported separately in the package state.
 
+Animated textures are supported in cards, search, ingredient chains and the map. **Animate icons** switches to a visible static frame. The viewer animates only visible icons, pauses hidden tabs and starts with static icons when reduced motion is requested. This release includes 416 distinct animations referenced by 701 resources. Pinned Avaritia base textures are included; procedural 3-D and halo effects are not emulated.
+
 ![Example recipe card](preview.png)
 
 ## Open the diagram
 
 [**Open the diagram in your browser**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
 
-Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r11), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
+Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r12), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
 
 - **By recipe:** select an ingredient to follow its crafting chain.
 - **Expandable chain:** open only the branches you want to inspect.
