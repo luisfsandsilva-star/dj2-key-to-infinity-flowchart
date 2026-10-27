@@ -5,8 +5,8 @@ Por receta: ingredientes → proceso → productos. Pulsar un ingrediente para s
 Cadena desplegable: abrir sólo las ramas que quieras consultar.
 Mapa general: ampliar, desplazar y seleccionar; Abrir receta permite leer los detalles.
 
-Estado: En preparación. 60 dependencias pendientes de verificar.
-Ruta elegida: 4597 recursos y 1939 recetas.
+Estado: En preparación. 52 dependencias pendientes de verificar.
+Ruta elegida: 4706 recursos y 1989 recetas.
 Las cantidades pertenecen a cada receta; no son una suma acumulada del coste total.
 Las alternativas OR se eligen de una en una. Revisar los rendimientos aleatorios y las condiciones.
 Acceso al mundo, permisos, estructuras y condiciones indicadas deben cumplirse.
