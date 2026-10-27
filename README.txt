@@ -4,6 +4,11 @@ Open index.html in a modern browser. It works offline.
 By recipe: ingredients → process → products. Select an ingredient to follow its chain.
 Expandable chain: open only the branches you want to inspect.
 Overview map: zoom, pan and select; Open recipe shows the details.
+Focus a resource or process, adjust depth, group areas and dim branches outside the focus.
+Use the inspector for the selected node and choose one OR alternative at a time.
+Track progress locally in this browser; local progress does not change recipe evidence.
+The quantity planner estimates requirements using the chosen alternatives and stated recipe yields. Check its assumptions and unresolved conditions.
+The selected route and full search index load first. Catalog details, textures and animations decode on demand from this same offline HTML.
 The viewer and search are in English. Verified pack texture previews appear where available; other entries use explicit type symbols.
 
 Animate icons toggles animated textures in cards, search and the map. A visible static frame is always available. Only visible icons animate; reduced-motion preferences start with animation off.
@@ -17,5 +22,5 @@ Choose one OR alternative at a time. Check random yields and conditions.
 The stated world access, permissions, structures and conditions must hold.
 Protected narrative note content is excluded.
 
-viewer-data.json.gz contains the same filtered data as the HTML.
+viewer-data.json.gz contains the complete unchanged filtered data reconstructed from the HTML chunks.
 status.json records the version, scope, counts and hashes for package verification.
