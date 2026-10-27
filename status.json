@@ -1,0 +1,46 @@
+{
+  "pack": "Divine Journey 2",
+  "version": "2.23.4",
+  "target": "Key to Infinity",
+  "language": "en",
+  "status": "Work in progress",
+  "completeDependencyClosure": false,
+  "runId": "20261026-001256",
+  "routeSummary": {
+    "candidateStacksExamined": 24704,
+    "selectedStacks": 4748,
+    "selectedRecipes": 2007,
+    "selectedAlternatives": 908,
+    "selectedSemanticMatches": 1641,
+    "selectedWildcardMatches": 24,
+    "selectedTaggedVariantMatches": 89,
+    "selectedAspectCrystalAliases": 0,
+    "provenAcquisitionLeaves": 101,
+    "selectedAcquisitionProcesses": 42,
+    "unprovenLeaves": 49,
+    "cyclicCandidateStacks": 2465,
+    "selectedPartialRecipes": 0,
+    "selectedUnresolvedRegistryRecipes": 0,
+    "recipesWithConditions": 874,
+    "recipesWithRequirements": 1300,
+    "oreSnapshotImported": true,
+    "explicitAcquisitionRecordsAccepted": 172,
+    "rejectedAcquisitionRecords": 0,
+    "unsupportedWildcardOutputs": 0
+  },
+  "catalogResources": 42267,
+  "catalogRecipes": 36964,
+  "viewerSha256": "a588c57257fd3cc787bcde6c50db75a5eaeb38a8a36fd244917f39d4050b624d",
+  "dataSha256": "a9b00c623604b950225297423082c2ad3df7228d4038396062de6b29011a1535",
+  "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
+  "iconCoverage": {
+    "resourceDenominator": 42267,
+    "resourceCoverage": {
+      "asset": 18107,
+      "fallback": 24160
+    },
+    "machineDenominator": 299,
+    "fallbackIsExplicit": true,
+    "allResourceAndMachineReferencesResolve": true
+  }
+}

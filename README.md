@@ -1,46 +1,49 @@
 # Key to Infinity · Divine Journey 2 2.23.4
 
-**Versión preliminar: 52 dependencias pendientes de verificar.** El diagrama sigue en preparación.
+**Preview: 49 dependencies awaiting verification.** The research route remains incomplete.
 
-Visor en español con ingredientes → proceso → productos, búsqueda, historial, cadena desplegable y mapa general. La ruta seleccionada contiene **4.706 recursos y 1.989 recetas**; el catálogo navegable incluye 42.247 recursos y 36.933 procesos.
+An English viewer with ingredients → process → products, search, navigation history, an expandable chain and an overview map. The selected route contains **4,748 resources and 2,007 recipes**; the browsable catalog includes **42,267 resources and 36,964 processes**.
 
-![Ejemplo de ficha](preview.png)
+Cards, ingredient chains and search results display embedded pack texture previews where the item, variant or fluid mapping has been verified. Other entries use explicit type symbols. A texture preview is a visual aid, not proof that a resource is obtainable; icon coverage is reported separately in the package state.
 
-## Ver el diagrama
+![Example recipe card](preview.png)
 
-[**Abrir el diagrama en el navegador**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
+## Open the diagram
 
-Descarga el [paquete del avance actualizado](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r9), extráelo y abre `index.html` en un navegador moderno. Funciona sin conexión y no necesita servidor. GitHub muestra el código de los archivos HTML; usa la descarga para abrir el visor.
+[**Open the diagram in your browser**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
 
-- **Por receta:** pulsa un ingrediente para seguir su fabricación.
-- **Cadena desplegable:** abre sólo las ramas que quieras consultar.
-- **Mapa general:** amplía, desplaza y selecciona un nodo; pulsa Abrir receta para leerlo.
+Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r10), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
 
-Las cantidades corresponden a una ejecución de cada receta. No se suman automáticamente en una lista total de materiales. Las alternativas OR se eligen de una en una; los rendimientos aleatorios y los requisitos de mundo, herramientas y estructuras se conservan en cada ficha.
+- **By recipe:** select an ingredient to follow its crafting chain.
+- **Expandable chain:** open only the branches you want to inspect.
+- **Overview map:** zoom, pan and select a node, then choose Open recipe to read it.
+- **Search:** find resources, fluids and machines throughout the catalog, with icons alongside results.
 
-La fabricación de cubos de energía incluye una lista desplegable con cada crafteo intermedio y enlaces a sus cuadrículas. Las rutas de captura, materiales lunares, Enchanter y carga solar conservan sus condiciones y cantidades. La caldera fría incluye construcción por capas y el ritual de Oblivion Catalyst muestra el sacrificio vivo. El catálogo incluye las 165 obtenciones verificadas, aunque la ruta principal no las elija. Las cadenas físicas de Soul Snare, primera gema tartárica y carga RAW64 conservan costes, azar, límites de recipiente y remanentes sin crédito.
+Quantities apply to one run of each recipe. They are not automatically accumulated into a total bill of materials. Choose one OR alternative at a time; each card retains random yields and its world, tool and structure requirements.
 
-La cadena de Totemic y Roots incluye los brotes de cedro, búfalos con maduración real, loros y águilas, invocación de Baykok y cultivo de Wildwood. Las fichas indican selección de ceremonias, instrumentos, costes, cantidades mínimas y rendimientos aleatorios.
+Energy Cube crafting includes an expandable sequence of intermediate crafts with links to their grids. Capture routes, lunar materials, Enchanter operations and sunlight charging retain their conditions and quantities. The cold boiler includes construction layers, and the Oblivion Catalyst ritual shows the living sacrifice. Verified acquisitions remain available in the catalog even when the main route does not select them. The physical Soul Snare, first Tartaric Gem and RAW64 charging chains retain costs, randomness, carrier limits and unclaimed remnants.
 
-La fuente de cáñamo muestra semilla natural, cultivo pagado y la distribución de 0–3 fibras por cosecha. Las configuraciones de fábrica de Fluid Transposer y Arboreal Extractor están corroboradas con las salidas de la extracción local.
+The Totemic and Roots chain includes Cedar Saplings, Buffalo with actual maturation, Parrots and Eagles, Baykok summoning and Wildwood cultivation. Cards explain ceremony selection, instruments, costs, minimum quantities and random yields.
 
-Las nuevas fichas incluyen la estrella del Nether, el combate de Asorah y la búsqueda de la Powerstone en una fortaleza abisal. Las fuentes de Athame muestran el rendimiento aleatorio de 0–4; los cuatro reagentes elementales de Blood Magic usan una gema física con RAW64, mínimo 8 y drenaje 4, sin acreditar su remanente.
+The Hemp source shows natural seeds, paid cultivation and the distribution of 0–3 fibers per harvest. Fluid Transposer and Arboreal Extractor factory configurations are corroborated against local extraction outputs.
 
-Este avance añade Coralium, esencia abisal por Drain Staff, acceso pagado al Aether y Aerogel, la cuadrícula de 5×5 del Sigil of Purity, combates de Watcher y Ancient Entity, Inferium aleatorio, Prosperity del Nether, diamante industrial por explosión y Fluix en agua. Las fichas conservan los consumos físicos, rendimientos y requisitos de cada operación. El acceso inicial al Aether se paga una vez y se conserva para las siguientes operaciones del mismo mundo y jugador.
+Cards include the Nether Star, the Asorah fight and the Powerstone search in an Abyssal Stronghold. Athame sources show their random 0–4 yield; the four Blood Magic elemental reagents use a physical RAW64 gem with minimum 8 and drain 4, leaving its remainder unclaimed.
 
-## Alcance del avance
+This preview also includes Coralium, Abyssal Essence through the Drain Staff, paid Aether access and Aerogel, the 5 × 5 Sigil of Purity grid, Watcher and Ancient Entity fights, random Inferium, Nether Prosperity, Industrial Diamond through an explosion and wet Fluix conversion. Cards retain each operation's physical debits, yields and requirements. Initial Aether access is paid once and retained for later operations in the same world with the same player.
 
-Las 1.989 selecciones de receta conservan los operandos de sus fuentes y los 7.786 enlaces del recorrido cumplen una altura estrictamente descendente. Hay **0 recetas parciales elegidas**, **0 registros no resueltos elegidos** y **52 dependencias pendientes**. Una dependencia pendiente no se presenta como materia prima gratuita. El selector y la auditoría rechazan procesos incompletos como productores; las fichas del catálogo aún no corroboradas muestran su estado pendiente.
+## Preview scope
 
-Se han contrastado recetas con la extracción local del pack 2.23.4 y con evidencia mecánica de sus clases y configuración. Los registros que no recoge el exportador conservan su fuente mecánica declarada. Las condiciones y la construcción previa indicada en cada proceso forman parte de su alcance; este avance no afirma cierre completo.
+The **2,007 selected recipes** retain their source operands, and the **7,863 route edges** satisfy a strictly descending height. There are **0 selected partial recipes**, **0 selected unresolved registry entries** and **49 pending dependencies**. A pending dependency is not presented as a free raw material. Selection and auditing reject incomplete processes as producers; catalog cards that have not been corroborated show their pending status.
 
-La nota narrativa protegida queda excluida. No se distribuyen mods, mundos, registros del juego ni configuración personal.
+Recipes have been compared against local extraction from pack 2.23.4 and mechanical evidence from its classes and configuration. Records omitted by the exporter retain their declared mechanical source. Each process's stated conditions and prior construction are part of its scope; this preview does not claim complete dependency closure.
 
-## Archivos
+The protected narrative note is excluded. Mods, worlds, game logs and personal configuration are not distributed.
 
-- `index.html`: visor autónomo, con los datos filtrados incorporados.
-- `datos-del-visor.json.gz`: los mismos datos públicos del visor.
-- `estado.json`: versión, estado, recuentos y huellas del paquete.
-- `LEEME.txt`: instrucciones de uso y alcance.
+## Files
 
-Pack original: [Divine Journey 2, versión 2.23.4](https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4). Los nombres y contenidos de los mods pertenecen a sus respectivos autores.
+- `index.html`: self-contained viewer with its filtered data and embedded icons.
+- `viewer-data.json.gz`: the same public viewer data.
+- `status.json`: package version, language, status, counts, icon coverage and hashes.
+- `README.txt`: usage instructions and scope.
+
+Original pack: [Divine Journey 2, version 2.23.4](https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4). Mod names and content belong to their respective authors.
