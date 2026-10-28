@@ -30,7 +30,7 @@
   },
   "catalogResources": 42267,
   "catalogRecipes": 36964,
-  "viewerSha256": "2cff3fdaf18043906284666faf3bd27d32f6d3764b9684900c4de05a63a80a0f",
+  "viewerSha256": "4ab442556a7febb1e4633b4e616890469fe035c22d1e13d90eeba5b3329f4a4b",
   "dataSha256": "dcf02fc847869341944e655c71c76720865fbcc943bb03dab1449339567458d2",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "iconAnimation": {
@@ -53,17 +53,18 @@
     "fullIngredientChain": true,
     "catalogIngredientChains": true,
     "unlimitedChainDepth": true,
-    "filterTogglesPreserveViewport": true
+    "filterTogglesPreserveViewport": true,
+    "streamingChunksWaitForCompletion": true
   },
   "stagedPayload": {
     "fullResources": 42267,
     "fullRecipes": 36964,
     "initialResources": 4904,
     "initialRecipes": 3079,
-    "initialDecodedBytes": 32689631,
+    "initialDecodedBytes": 32689661,
     "fullDecodedBytes": 164850332,
     "initialDecodedReductionPercent": 80.17,
-    "initialGzipBase64Bytes": 4197492,
+    "initialGzipBase64Bytes": 4197568,
     "fullGzipBase64Bytes": 37178764,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,

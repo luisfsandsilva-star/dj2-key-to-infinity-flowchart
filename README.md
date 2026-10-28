@@ -16,7 +16,7 @@ Cards, search, ingredient chains and the map now use 24,531 direct resource text
 
 [**Open the diagram in your browser**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
 
-Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r15), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
+Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r16), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
 
 - **By recipe:** select an ingredient to follow its crafting chain.
 - **Expandable chain:** open only the branches you want to inspect.
