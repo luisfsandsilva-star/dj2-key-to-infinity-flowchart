@@ -4,7 +4,9 @@ Open index.html in a modern browser. It works offline.
 By recipe: ingredients → process → products. Select an ingredient to follow its chain.
 Expandable chain: open only the branches you want to inspect.
 Overview map: zoom, pan and select; Open recipe shows the details.
-Focus a resource or process, adjust depth, group areas and dim branches outside the focus.
+Choose 1–100 hops or Full chain. Ingredients recursively follows every selected producer and input; Full chain to Key opens the main objective.
+Full chain has no depth or node cap, including catalog resources outside the core route. Unverified producers remain visible boundaries.
+Compact OR and Pending branches preserve zoom, pan and surviving node positions.
 Use the inspector for the selected node and choose one OR alternative at a time.
 Track progress locally in this browser; local progress does not change recipe evidence.
 The quantity planner estimates requirements using the chosen alternatives and stated recipe yields. Check its assumptions and unresolved conditions.

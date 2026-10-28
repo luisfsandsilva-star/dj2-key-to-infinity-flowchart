@@ -38,22 +38,23 @@
  <nav class="navigation" aria-label="Navigation"><button id="back" disabled>← Back</button><button id="forward" disabled aria-label="Forward">→</button><button id="home">Key to Infinity</button></nav>
  <div class="modes" aria-label="View"><button id="recipe-mode" aria-pressed="true">By recipe</button><button id="chain-mode" aria-pressed="false">Expandable chain</button><button id="map-mode" aria-pressed="false">Overview map</button><button id="animate-icons" aria-pressed="true">Animate icons</button></div>
 </div>
-<p class="notice" id="research-status" role="status">Work in progress · Research route incomplete. Check quantities and conditions for each recipe.</p>
+<p class="notice" id="research-status" role="status">Work in progress · Core research route incomplete. Check quantities and conditions for each recipe.</p>
 <nav id="breadcrumbs" class="crumbs" aria-label="Breadcrumb trail"></nav>
 <main>
 <section id="recipe-view"><div class="loading" role="status">Loading the crafting chain…</div></section>
 <section id="chain-view" class="chain-view" hidden aria-label="Expandable ingredient chain"></section>
 <section id="overview" hidden aria-label="Interactive route map">
  <h2 style="margin:0;font-size:22px">Route explorer</h2>
- <p class="subtext">Select a resource or process to inspect its recipe. Focus on nearby dependencies, explore areas, or open the whole route.</p>
+ <p class="subtext">Select a resource or process to inspect its recipe. Follow ingredients at any depth, open the full chain to Key, or explore the whole route and its areas.</p>
  <div class="map-controls" aria-label="Map display controls">
   <label>View <select id="map-projection"><option value="focus">Focused chain</option><option value="global">Whole route</option><option value="areas">Areas</option></select></label>
-  <label>Depth <select id="map-depth"><option value="1">1 hop</option><option value="2">2 hops</option><option value="3">3 hops</option></select></label>
+  <label>Depth <select id="map-depth" title="Each arrow is one hop. Full chain follows every available dependency."><option value="1">1 hop</option><option value="2">2 hops</option><option value="3">3 hops</option><option value="4">4 hops</option><option value="5">5 hops</option><option value="6">6 hops</option><option value="7">7 hops</option><option value="8">8 hops</option><option value="9">9 hops</option><option value="10">10 hops</option><option value="15">15 hops</option><option value="20">20 hops</option><option value="30">30 hops</option><option value="50">50 hops</option><option value="100">100 hops</option><option value="all">Full chain</option></select></label>
+  <label>Trace <select id="map-direction"><option value="ingredients">Ingredients</option><option value="both">Ingredients and uses</option></select></label>
   <label><input id="dim-unrelated" type="checkbox" checked> Dim unrelated</label>
   <label>Connections <select id="map-scope"><option value="direct">Direct</option><option value="chain">Dependency chain</option></select></label>
   <label><input id="compact-or" type="checkbox" checked> Compact OR</label>
   <label><input id="pending-only" type="checkbox"> Pending branches</label>
-  <button id="map-path">Path to Key</button><button id="map-reset">Reset view</button><button id="open-planner">Material plan</button>
+  <button id="full-chain-key">Full chain to Key</button><button id="map-path">Path to Key</button><button id="map-reset">Reset view</button><button id="open-planner">Material plan</button>
  </div>
  <p id="map-view-description"></p><div id="area-controls" class="area-controls"></div>
  <div class="map-layout">
@@ -84,46 +85,101 @@
 <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
 </div>
 <script>
-/* Pure graph projection for the filtered viewer payload. No catalogue mutation.
- * Browser: createMapModel(data). CommonJS: require(...).createMapModel(data).
- * buildView({mode:'global'|'focus'|'areas',focus,depth:1..3,compactOR,
- *            expandedAreas:[],maxNodes:360}) returns independent render records.
- * neighborhood/relevant/path use canonical selected-route keys. A chain is the
- * union of directed ancestors and descendants, never an undirected component.
+/* Pure projections of the filtered viewer payload; never mutates data.
+ * Browser global / CommonJS export: createMapModel(data).
+ * buildView({mode:'global'|'focus'|'areas',focus,depth:1..100|'all',
+ *   direction:'ingredients'|'both',compactOR,expandedAreas:[],maxNodes?}).
+ * Focus defaults to ingredients. No implicit node cap. Global/areas keep the
+ * original selected-route graph. Ingredients focus uses hydrated R.recipe choices
+ * only. Both adds known outgoing selected-route uses to that same closure; it
+ * does not sweep all catalogue consumers. Distinct producer aliases stay distinct.
+ * Hydrate selected closure before buildView(), then invalidate() if this
+ * model was already used. No catalogue-wide alternate-producer exploration.
+ * dependencyKeys(key,depth='all',compactOR=false): directed incoming Set.
+ * neighborhood(key,depth=1,compactOR=false,direction='both'): directed Set.
+ * relevant(key,'direct'|'chain'|'ingredients'|'upstream',compactOR=false): Set;
+ * chain always unions incoming/outgoing walks; ingredients/upstream walk incoming.
+ * resolve(key,compactOR), path(from,to,compactOR), areaFor(key), pendingKeys Set.
+ * Numeric hop counts count graph edges in the requested compact projection.
+ * Positions derive from the full NONcompact context, so compact/depth toggles
+ * retain coordinates of surviving nodes. Byproducts are edges of a producer,
+ * not extra ingredients; incoming traversal does not expand through byproducts.
  */
 (function(root){
 'use strict';
 const AREA_NAMES=['Chemistry','Electronics','Magic','Infrastructure','World acquisition','Other'];
-function createMapModel(data){
- const R=data.resources||{},Q=data.recipes||{},layout=data.mapLayout||{},positions=layout.positions||{};
- const keys=Object.keys(positions),keySet=new Set(keys),baseAliases={...(layout.aliases||{})};
- for(const [id,r] of Object.entries(R))if(r.selectedVariant)baseAliases['i'+id]='i'+r.selectedVariant;
- function follow(key,aliases){const seen=new Set();while(aliases[key]&&aliases[key]!==key&&!seen.has(key)){seen.add(key);key=aliases[key]}return key}
- const canonical=key=>follow(key,baseAliases);
- const baseEdges=(layout.edges||[]).map(e=>({...e,a:canonical(e.a),b:canonical(e.b)})).filter(e=>keySet.has(e.a)&&keySet.has(e.b));
- const compactAliases={...baseAliases},orGroups=[];
- for(const key of keys){
-  if(key[0]!=='r')continue;const q=Q[key.slice(1)];if(!q||q.mechanics?.logic!=='OR'||q.inputs?.length!==1||q.outputs?.length!==1)continue;
-  const ingredient=canonical('i'+q.inputs[0].id),output=canonical('i'+q.outputs[0].id);
-  // Collapse only transparent generated OR predicates, never a real machine.
-  if(!key.slice(1).startsWith('viewer:or:')||!output.startsWith('ipredicate:')||!keySet.has(ingredient))continue;
-  compactAliases[key]=ingredient;compactAliases[output]=ingredient;
-  const alternatives=[...(R[q.outputs[0].id]?.alternatives||q.inputs.map(s=>s.id))];
-  orGroups.push({key,output,selected:ingredient,alternatives,recipe:key.slice(1)});
+const depthValue=value=>value==='all'||value===Infinity?Infinity:Math.max(1,Math.min(100,Math.floor(Number(value)||2)));
+function follow(key,aliases){const seen=new Set();while(aliases[key]&&aliases[key]!==key&&!seen.has(key)){seen.add(key);key=aliases[key]}return key}
+function graph(keys,edges,resolve){
+ const ids=new Set(keys.map(resolve)),result=[],seen=new Set(),incoming=new Map(),outgoing=new Map();
+ for(const k of ids){incoming.set(k,[]);outgoing.set(k,[])}
+ for(const e of edges){const a=resolve(e.a),b=resolve(e.b),sig=a+'\0'+b+'\0'+!!e.reuse;if(a===b||seen.has(sig)||!ids.has(a)||!ids.has(b))continue;seen.add(sig);const edge={...e,a,b};result.push(edge);incoming.get(b).push(a);outgoing.get(a).push(b)}
+ return {ids,edges:result,incoming,outgoing};
+}
+// Queue-based BFS is O(V+E), including all-depth and cyclic graphs.
+function distances(key,adj,depth=Infinity){const result=new Map([[key,0]]),queue=[key];for(let i=0;i<queue.length;i++){const k=queue[i],d=result.get(k);if(d>=depth)continue;for(const n of adj.get(k)||[])if(!result.has(n)){result.set(n,d+1);queue.push(n)}}return result}
+function relatedGraph(g,key,depth,direction){if(!g.ids.has(key))return new Set();const found=new Set(distances(key,g.incoming,depth).keys());if(direction==='both')for(const k of distances(key,g.outgoing,depth).keys())found.add(k);return found}
+function createState(data){
+ const R=data.resources||{},Q=data.recipes||{},layout=data.mapLayout||{},positions=layout.positions||{},routeKeys=Object.keys(positions),routeKeySet=new Set(routeKeys),routeAliases={...(layout.aliases||{})};
+ for(const [id,r]of Object.entries(R))if(r.selectedVariant)routeAliases['i'+id]='i'+r.selectedVariant;
+ function makeContext(keys,edges,baseAliases,boundaries=new Map(),source='route'){
+  const canonical=key=>follow(key,baseAliases),compactAliases={...baseAliases},orGroups=[];
+  const originalKeys=new Set(keys);
+  for(const key of keys){if(key[0]!=='r')continue;const q=Q[key.slice(1)];if(!q||q.mechanics?.logic!=='OR'||q.inputs?.length!==1||q.outputs?.length!==1)continue;
+   const ingredient=canonical('i'+q.inputs[0].id),output=canonical('i'+q.outputs[0].id);
+   if(!key.slice(1).startsWith('viewer:or:')||!output.startsWith('ipredicate:')||!originalKeys.has(ingredient))continue;
+   compactAliases[key]=ingredient;compactAliases[output]=ingredient;
+   orGroups.push({key,output,selected:ingredient,alternatives:[...(R[q.outputs[0].id]?.alternatives||q.inputs.map(s=>s.id))],recipe:key.slice(1)});
+  }
+  const resolve=(key,compactOR=false)=>follow(key,compactOR?compactAliases:baseAliases);
+  const graphs=[graph(keys,edges,k=>resolve(k)),graph(keys,edges,k=>resolve(k,true))];
+  const groupsByKey=new Map();for(const group of orGroups){const key=resolve(group.selected,true);if(!groupsByKey.has(key))groupsByKey.set(key,[]);groupsByKey.get(key).push(group)}
+  const pendingKeys=new Set([...graphs[0].ids].filter(k=>k[0]==='i'&&(R[k.slice(1)]?.status==='missing'||source==='catalog'&&boundaries.has(k)&&R[k.slice(1)]?.status!=='raw')));
+  const pendingAncestors=graphs.map((g,index)=>{const result=new Set(),queue=[];for(const k of pendingKeys){const n=resolve(k,!!index);if(g.ids.has(n)&&!result.has(n)){result.add(n);queue.push(n)}}for(let i=0;i<queue.length;i++)for(const n of g.outgoing.get(queue[i])||[])if(!result.has(n)){result.add(n);queue.push(n)}return result});
+  return {keys,baseAliases,resolve,graphs,orGroups,groupsByKey,pendingKeys,pendingAncestors,boundaries,source,geometries:new Map()};
  }
- const resolve=(key,compactOR=false)=>follow(key,compactOR?compactAliases:baseAliases);
- const groupsByKey=new Map();for(const group of orGroups){const key=resolve(group.selected,true);if(!groupsByKey.has(key))groupsByKey.set(key,[]);groupsByKey.get(key).push(group)}
- function graph(compactOR){
-  const ids=new Set(keys.map(k=>resolve(k,compactOR))),edges=[],seen=new Set(),incoming=new Map(),outgoing=new Map();
-  for(const k of ids){incoming.set(k,[]);outgoing.set(k,[])}
-  for(const e of baseEdges){const a=resolve(e.a,compactOR),b=resolve(e.b,compactOR),sig=a+'\0'+b+'\0'+!!e.reuse;if(a===b||seen.has(sig))continue;seen.add(sig);const edge={...e,a,b};edges.push(edge);incoming.get(b).push(a);outgoing.get(a).push(b)}
-  return {ids,edges,incoming,outgoing};
+ const routeEdges=(layout.edges||[]).map(e=>({...e,a:follow(e.a,routeAliases),b:follow(e.b,routeAliases)})).filter(e=>routeKeySet.has(e.a)&&routeKeySet.has(e.b));
+ const route=makeContext(routeKeys,routeEdges,routeAliases),catalogContexts=new Map(),bothContexts=new Map();let lastContext=route;
+ // Catalogue aliases are safe only when they retain the selected producer.
+ function catalogCanonical(key,aliases){if(key[0]!=='i')return key;const seen=new Set();let current=key;while(!seen.has(current)){seen.add(current);const r=R[current.slice(1)],target=r?.selectedVariant&&'i'+r.selectedVariant;if(!target||!R[target.slice(1)]||r.recipe&&R[target.slice(1)].recipe!==r.recipe)break;aliases[current]=target;current=target}return current}
+ function catalogContext(target){
+  if(catalogContexts.has(target))return catalogContexts.get(target);
+  const ids=new Set(),edges=[],aliases={},boundaries=new Map(),queued=new Set(),queue=[];
+  const canonical=k=>catalogCanonical(k,aliases);
+  function enqueue(key){key=canonical(key);ids.add(key);if(!queued.has(key)){queued.add(key);queue.push(key)}return key}
+  function addRecipe(rid,requested){const q=Q[rid],process='r'+rid;ids.add(process);if(!q){boundaries.set(process,'producer-not-loaded');return}
+   let inputs=q.inputs||[];
+   if(q.mechanics?.logic==='OR'&&inputs.length>1){const variant=R[requested?.slice(1)]?.selectedVariant,selected=variant&&inputs.find(s=>s.id===variant);inputs=selected?[selected]:[];if(!selected)boundaries.set(process,'or-choice-not-selected')}
+   for(const slot of inputs){const item=enqueue('i'+slot.id);edges.push({a:item,b:process,reuse:slot.consumed===false})}
+   let requestedOutput=false;
+   for(const slot of q.outputs||[]){const item=canonical('i'+slot.id);ids.add(item);edges.push({a:process,b:item,reuse:false});if(item===requested)requestedOutput=true}
+   // A consumer-qualified predicate may retain a distinct chosen producer while
+   // its recipe still emits the concrete selectedVariant identity.
+   if(requested&&!requestedOutput&&R[requested.slice(1)]?.selectedVariant&&(q.outputs||[]).some(s=>s.id===R[requested.slice(1)].selectedVariant)){ids.add(requested);edges.push({a:process,b:requested,reuse:false})}
+   else if(requested&&!requestedOutput)boundaries.set(requested,'selected-producer-output-mismatch');
+  }
+  enqueue(target);
+  for(let i=0;i<queue.length;i++){const key=queue[i];if(key[0]==='r'){addRecipe(key.slice(1));continue}const r=R[key.slice(1)];if(!r){boundaries.set(key,'resource-not-loaded');continue}if(!r.recipe){if(r.status!=='raw')boundaries.set(key,r.status==='missing'?'awaiting-verification':'no-selected-producer');continue}if(!Q[r.recipe]){boundaries.set(key,'producer-not-loaded');continue}addRecipe(r.recipe,key)}
+  const context=makeContext([...ids],edges,aliases,boundaries,'catalog');catalogContexts.set(target,context);return context;
  }
- const graphs=[graph(false),graph(true)];
- function walk(key,adj,depth=Infinity){const found=new Set([key]);let frontier=[key];for(let d=0;frontier.length&&d<depth;d++){const next=[];for(const k of frontier)for(const n of adj.get(k)||[])if(!found.has(n)){found.add(n);next.push(n)}frontier=next}return found}
- function related(key,depth,compactOR=false){key=resolve(key,compactOR);const g=graphs[+compactOR];if(!g.ids.has(key))return new Set();return new Set([...walk(key,g.incoming,depth),...walk(key,g.outgoing,depth)])}
- const pendingKeys=new Set(keys.filter(k=>k[0]==='i'&&R[k.slice(1)]?.status==='missing'));
- const pendingAncestors=graphs.map(g=>{const result=new Set(),queue=[];for(const k of pendingKeys){const n=resolve(k,g===graphs[1]);if(g.ids.has(n)&&!result.has(n)){result.add(n);queue.push(n)}}for(let i=0;i<queue.length;i++)for(const n of g.outgoing.get(queue[i])||[])if(!result.has(n)){result.add(n);queue.push(n)}return result});
+ // Ingredients and uses keeps the literal producer closure, then adds only
+ // outgoing uses available in the original selected-route graph. A distinct
+ // consumer-qualified producer identity is never collapsed to borrow uses.
+ function bothContext(target){
+  if(bothContexts.has(target))return bothContexts.get(target);
+  const dependencies=catalogContext(target),focus=dependencies.resolve(target),g=route.graphs[0];
+  const downstream=g.ids.has(focus)?new Set(distances(focus,g.outgoing).keys()):new Set();
+  const aliases={...dependencies.baseAliases},keys=new Set(dependencies.keys),edges=dependencies.graphs[0].edges.map(e=>({...e}));
+  for(const key of downstream)keys.add(catalogCanonical(key,aliases));
+  for(const e of g.edges)if(downstream.has(e.a)&&downstream.has(e.b))edges.push({...e,a:catalogCanonical(e.a,aliases),b:catalogCanonical(e.b,aliases)});
+  const context=makeContext([...keys],edges,aliases,new Map(dependencies.boundaries),'catalog');bothContexts.set(target,context);return context;
+ }
+ function contextFor(key){const resolved=route.resolve(key),resource=key?.[0]==='i'?R[key.slice(1)]:null;
+  // An off-route consumer predicate can describe the same concrete item while
+  // intentionally choosing another producer. Do not borrow the route's choice.
+  const distinctProducer=key!==resolved&&resource?.recipe&&resource.recipe!==R[resolved.slice(1)]?.recipe;
+  return route.graphs[0].ids.has(resolved)&&(!distinctProducer||routeKeySet.has(key))?route:catalogContext(key)}
+ function resolve(key,compactOR=false){return contextFor(key).resolve(key,compactOR)}
  function areaFor(key){
   const obj=key[0]==='r'?Q[key.slice(1)]:R[key.slice(1)],id=key.slice(1).toLowerCase();
   const machine=key[0]==='r'?String(obj?.machine||'').toLowerCase():'';
@@ -135,40 +191,57 @@ function createMapModel(data){
   if(/thermalexpansion|mekanism|enderio|immersiveengineering|industrialforegoing|extrautils|rftools|actuallyadditions|storage|furnace|smelter|crusher|pulverizer|crafting table|horno/.test(text))return 'Infrastructure';
   return 'Other';
  }
- function record(key,compactOR){const obj=key[0]==='r'?Q[key.slice(1)]:R[key.slice(1)],pending=key[0]==='i'&&obj?.status==='missing';return {key,label:obj?.name||obj?.machine||key,type:key[0]==='r'?'process':obj?.status==='raw'?'raw':'resource',area:areaFor(key),pending,ancestorPending:pendingAncestors[+compactOR].has(key)&&!pending,orGroups:(groupsByKey.get(resolve(key,true))||[]).map(g=>({...g,alternatives:[...g.alternatives]}))}}
- function path(from,to,compactOR=false){from=resolve(from,compactOR);to=resolve(to,compactOR);const g=graphs[+compactOR];if(!g.ids.has(from)||!g.ids.has(to))return [];const previous=new Map([[from,null]]),queue=[from];for(let i=0;i<queue.length&&!previous.has(to);i++)for(const n of g.outgoing.get(queue[i])||[])if(!previous.has(n)){previous.set(n,queue[i]);queue.push(n)}if(!previous.has(to))return [];const result=[];for(let n=to;n!==null;n=previous.get(n))result.push(n);return result.reverse()}
+ function record(key,compactOR,context){const obj=key[0]==='r'?Q[key.slice(1)]:R[key.slice(1)],pending=context.pendingKeys.has(key);return {key,label:obj?.name||obj?.machine||key,type:key[0]==='r'?'process':obj?.status==='raw'?'raw':'resource',area:areaFor(key),pending,ancestorPending:context.pendingAncestors[+compactOR].has(key)&&!pending,boundary:context.boundaries.get(key)||null,orGroups:(context.groupsByKey.get(context.resolve(key,true))||[]).map(g=>({...g,alternatives:[...g.alternatives]}))}}
+ function related(key,depth,compactOR=false,direction='both'){const context=direction==='ingredients'?catalogContext(key):bothContext(key);return relatedGraph(context.graphs[+compactOR],context.resolve(key,compactOR),depth,direction)}
+ function path(from,to,compactOR=false){
+  // The target's literal chosen-producer closure includes dependencies that the
+  // older selected-route map may omit. Try it before the route fallback.
+  const candidates=[catalogContext(to),contextFor(from),contextFor(to)];
+  for(const context of candidates){const g=context.graphs[+compactOR],a=context.resolve(from,compactOR),b=context.resolve(to,compactOR);if(!g.ids.has(a)||!g.ids.has(b))continue;const previous=new Map([[a,null]]),queue=[a];for(let i=0;i<queue.length&&!previous.has(b);i++)for(const n of g.outgoing.get(queue[i])||[])if(!previous.has(n)){previous.set(n,queue[i]);queue.push(n)}if(!previous.has(b))continue;const result=[];for(let n=b;n!==null;n=previous.get(n))result.push(n);return result.reverse()}
+  return [];
+ }
+
+ function geometry(context,focus,direction){
+  const cacheKey=focus+'\0'+direction;if(context.geometries.has(cacheKey))return context.geometries.get(cacheKey);
+  const g=context.graphs[0],up=distances(focus,g.incoming),down=direction==='both'?distances(focus,g.outgoing):new Map(),layers=new Map();
+  for(const key of relatedGraph(g,focus,Infinity,direction)){const layer=key===focus?0:up.has(key)?-up.get(key):down.get(key);if(!layers.has(layer))layers.set(layer,[]);layers.get(layer).push(key)}
+  // Size row capacity from the FULL canonical context, never the current
+  // depth/filter/compact projection. Broad chains use the canvas height while
+  // every surviving node keeps its coordinates across projection toggles.
+  let fullCount=0;for(const items of layers.values())fullCount+=items.length;
+  const rowLimit=Math.max(12,Math.min(128,Math.ceil(Math.sqrt(fullCount*2))));
+  let maxRows=1;for(const items of layers.values())maxRows=Math.max(maxRows,Math.min(rowLimit,items.length));const result=new Map();let offset=40;
+  for(const [layer,items]of [...layers].sort((a,b)=>a[0]-b[0])){items.sort();const rows=Math.min(rowLimit,items.length);for(let index=0;index<items.length;index++)result.set(items[index],[offset+Math.floor(index/rows)*300,40+(maxRows-rows)*64+(index%rows)*128]);offset+=Math.ceil(items.length/rows)*300+80}
+  context.geometries.set(cacheKey,result);return result;
+ }
  function buildView(options={}){
-  const mode=options.mode||'global',compactOR=!!options.compactOR,g=graphs[+compactOR],focus=resolve(options.focus||'i'+data.root,compactOR),depth=Math.max(1,Math.min(3,Number(options.depth)||2));
-  const aliases={};for(const k of new Set([...keys,...Object.keys(baseAliases)]))aliases[k]=resolve(k,compactOR);
+  const mode=options.mode||'global',compactOR=!!options.compactOR,originalFocus=options.focus||'i'+data.root,direction=options.direction==='both'?'both':'ingredients',depth=depthValue(options.depth);
+  const context=mode==='focus'?(direction==='ingredients'?catalogContext(originalFocus):bothContext(originalFocus)):route;lastContext=context;const g=context.graphs[+compactOR],focus=context.resolve(originalFocus,compactOR),baseFocus=context.resolve(originalFocus);
+  const aliases={};for(const k of new Set([...context.keys,...Object.keys(context.baseAliases)]))aliases[k]=context.resolve(k,compactOR);
   let ids=[...g.ids],edges=g.edges.map(e=>({...e})),nodes=[],truncated=false,totalNodes=ids.length;
   const areas=AREA_NAMES.map((name,index)=>{const members=ids.filter(k=>areaFor(k)===name);return {name,key:'area:'+index,count:members.length,members,expanded:(options.expandedAreas||[]).includes(name),actions:{expand:name,focus:members.find(k=>k[0]==='r')||members[0]||null}}});
   if(mode==='focus'){
-   const candidates=related(focus,depth,compactOR);totalNodes=candidates.size;
-   // Order by shortest directed distance to focus so a high-degree hub cannot
-   // displace the selection or its nearest dependencies from the bounded view.
-   const distance=new Map([[focus,0]]);for(let d=1;d<=depth;d++)for(const k of related(focus,d,compactOR))if(!distance.has(k))distance.set(k,d);
-   ids=[...candidates].sort((a,b)=>distance.get(a)-distance.get(b)||a.localeCompare(b)).slice(0,Math.max(1,Math.min(1000,options.maxNodes||360)));truncated=ids.length<totalNodes;
-   const upstream=walk(focus,g.incoming,depth),layers=new Map();
-   for(const k of ids){const layer=k===focus?0:(upstream.has(k)?-1:1)*distance.get(k);if(!layers.has(layer))layers.set(layer,[]);layers.get(layer).push(k)}
-   const maxRows=Math.min(12,Math.max(1,...[...layers.values()].map(a=>a.length)));let offset=40;
-   for(const [layer,items]of [...layers].sort((a,b)=>a[0]-b[0])){const rows=Math.min(12,items.length);items.forEach((key,index)=>nodes.push({...record(key,compactOR),x:offset+Math.floor(index/rows)*300,y:40+(maxRows-rows)*64+(index%rows)*128}));offset+=Math.ceil(items.length/rows)*300+80}
+   ids=[...relatedGraph(g,focus,depth,direction)];totalNodes=ids.length;
+   if(Number.isFinite(options.maxNodes)&&options.maxNodes>0&&ids.length>Math.floor(options.maxNodes)){const incoming=distances(focus,g.incoming,depth),outgoing=direction==='both'?distances(focus,g.outgoing,depth):new Map();ids.sort((a,b)=>Math.min(incoming.get(a)??Infinity,outgoing.get(a)??Infinity)-Math.min(incoming.get(b)??Infinity,outgoing.get(b)??Infinity)||a.localeCompare(b));ids=ids.slice(0,Math.floor(options.maxNodes));truncated=true}
+   const coords=geometry(context,baseFocus,direction);
+   nodes=ids.map(key=>{const pos=coords.get(key)||positions[key]||[40,40];return {...record(key,compactOR,context),x:pos[0],y:pos[1]}});
   }else if(mode==='areas'){
    const sizes=areas.map(a=>a.expanded?{w:Math.max(1,Math.ceil(Math.sqrt(a.count)))*300+100,h:Math.ceil(a.count/Math.max(1,Math.ceil(Math.sqrt(a.count))))*128+100}:{w:480,h:300});
-   const columnWidths=[0,1,2].map(c=>Math.max(sizes[c].w,sizes[c+3].w)),rowHeight=Math.max(...sizes.slice(0,3).map(s=>s.h));
+   const columnWidths=[0,1,2].map(c=>Math.max(sizes[c].w,sizes[c+3].w));let rowHeight=0;for(let i=0;i<3;i++)rowHeight=Math.max(rowHeight,sizes[i].h);
    for(const area of areas){if(!area.count)continue;const index=AREA_NAMES.indexOf(area.name),col=index%3,row=Math.floor(index/3),ox=columnWidths.slice(0,col).reduce((a,b)=>a+b,0),oy=row*rowHeight;
-    if(area.expanded){const columns=Math.max(1,Math.ceil(Math.sqrt(area.count)));area.members.forEach((key,i)=>nodes.push({...record(key,compactOR),x:ox+(i%columns)*300,y:oy+Math.floor(i/columns)*128}))}
-    else{const pending=area.members.filter(k=>pendingKeys.has(k)).length;nodes.push({key:area.key,label:area.name+' · '+area.count,type:'area',area:area.name,count:area.count,pending:pending>0,pendingCount:pending,ancestorPending:area.members.some(k=>pendingAncestors[+compactOR].has(k)),x:ox,y:oy,actions:area.actions});for(const k of area.members)aliases[k]=area.key}
+    if(area.expanded){const columns=Math.max(1,Math.ceil(Math.sqrt(area.count)));area.members.forEach((key,i)=>nodes.push({...record(key,compactOR,context),x:ox+(i%columns)*300,y:oy+Math.floor(i/columns)*128}))}
+    else{const pending=area.members.filter(k=>context.pendingKeys.has(k)).length;nodes.push({key:area.key,label:area.name+' · '+area.count,type:'area',area:area.name,count:area.count,pending:pending>0,pendingCount:pending,ancestorPending:area.members.some(k=>context.pendingAncestors[+compactOR].has(k)),x:ox,y:oy,actions:area.actions});for(const k of area.members)aliases[k]=area.key}
    }
-   for(const k of Object.keys(aliases))aliases[k]=aliases[resolve(k,compactOR)]||aliases[k];
+   for(const k of Object.keys(aliases))aliases[k]=aliases[context.resolve(k,compactOR)]||aliases[k];
    const grouped=new Map();for(const e of edges){const a=aliases[e.a]||e.a,b=aliases[e.b]||e.b;if(a===b)continue;const sig=a+'\0'+b+'\0'+!!e.reuse;if(grouped.has(sig))grouped.get(sig).count++;else grouped.set(sig,{...e,a,b,count:1})}edges=[...grouped.values()];
-  }else nodes=ids.map(key=>({...record(key,compactOR),x:positions[key]?.[0]||0,y:positions[key]?.[1]||0}));
-  const visible=new Set(nodes.map(n=>n.key));edges=edges.filter(e=>visible.has(e.a)&&visible.has(e.b));
-  const viewPositions=Object.fromEntries(nodes.map(n=>[n.key,[n.x,n.y]]));
-  const width=mode==='global'&&!compactOR?(layout.width||0):Math.max(0,...nodes.map(n=>n.x+300)),height=mode==='global'&&!compactOR?(layout.height||0):Math.max(0,...nodes.map(n=>n.y+128));
-  return {mode,nodes,edges,positions:viewPositions,aliases,width,height,selectedKey:aliases[focus]||focus,orGroups:orGroups.map(g=>({...g,alternatives:[...g.alternatives]})),areas,truncated,totalNodes,depth,compactOR};
+  }else nodes=ids.map(key=>({...record(key,compactOR,context),x:positions[key]?.[0]||0,y:positions[key]?.[1]||0}));
+  const visible=new Set(nodes.map(n=>n.key));edges=edges.filter(e=>visible.has(e.a)&&visible.has(e.b));const viewPositions={};let width=0,height=0;for(const n of nodes){viewPositions[n.key]=[n.x,n.y];width=Math.max(width,n.x+300);height=Math.max(height,n.y+128)}
+  if(mode==='global'&&!compactOR){width=layout.width||width;height=layout.height||height}
+  return {mode,nodes,edges,positions:viewPositions,aliases,width,height,selectedKey:aliases[focus]||focus,orGroups:context.orGroups.map(g=>({...g,alternatives:[...g.alternatives]})),areas,truncated,totalNodes,depth:depth===Infinity?'all':depth,direction,compactOR,source:context.source};
  }
- return {buildView,resolve,neighborhood:(key,depth=1,compactOR=false)=>related(key,Math.max(1,Math.min(3,depth)),compactOR),relevant:(key,scope='direct',compactOR=false)=>related(key,scope==='chain'?Infinity:1,compactOR),pendingKeys:new Set(pendingKeys),path,areaFor};
+ return {buildView,resolve,neighborhood:(key,depth=1,compactOR=false,direction='both')=>related(key,depthValue(depth),compactOR,direction),dependencyKeys:(key,depth='all',compactOR=false)=>related(key,depthValue(depth),compactOR,'ingredients'),relevant:(key,scope='direct',compactOR=false)=>related(key,scope==='direct'?1:Infinity,compactOR,scope==='ingredients'||scope==='upstream'?'ingredients':'both'),get pendingKeys(){return new Set(lastContext.pendingKeys)},path,areaFor};
 }
+function createMapModel(data){let state=createState(data);const api={invalidate(){state=createState(data);return api}};for(const name of ['buildView','resolve','neighborhood','dependencyKeys','relevant','path','areaFor'])api[name]=(...args)=>state[name](...args);Object.defineProperty(api,'pendingKeys',{get:()=>state.pendingKeys});return api}
 if(typeof module!=='undefined'&&module.exports)module.exports={createMapModel};
 root.createMapModel=createMapModel;
 })(typeof globalThis!=='undefined'?globalThis:this);
@@ -578,12 +651,13 @@ root.createMapModel=createMapModel;
     async function ensureClosure(id = data.root, options = {}) {
       metrics.closureCalls++;
       const picks = new Map(pairs(options.alternatives));
-      const queue = [], seen = new Set(), hydrated = new Set(), limit = 24000;
+      const queue = [], seen = new Set(), hydrated = new Set();
+      const limit = options.maxKeys === 'all' ? Math.max(initialKeys.size, Object.keys(catalogMap).length, 1) : 24000;
       function push(key) { if (!seen.has(key)) queue.push(key); }
       async function hydrate(key) {
         if (!hydrated.has(key)) {
           if (hydrated.size >= limit) {
-            const error = new Error('Selected viewer closure exceeds 24,000 keys.'); report(error, null); throw error;
+            const error = new Error('Selected viewer closure exceeds its '+limit+' catalog-key bound.'); report(error, null); throw error;
           }
           hydrated.add(key);
         }
@@ -615,7 +689,7 @@ root.createMapModel=createMapModel;
         const key = queue[index];
         if (seen.has(key)) continue;
         if (seen.size >= limit) {
-          const error = new Error('Selected viewer closure exceeds 24,000 keys.'); report(error, null); throw error;
+          const error = new Error('Selected viewer closure exceeds its '+limit+' catalog-key bound.'); report(error, null); throw error;
         }
         seen.add(key);
         const value = await hydrate(key); if (!value || initialKeys.has(key)) continue;
@@ -664,18 +738,19 @@ root.createMapModel=createMapModel;
 (function(root){
 'use strict';
 function installViewerUI14(api){
- const {$,data,R,Q,res,label,name,number,quantity,el,button,iconNode,recipeFor,recipeDetails,processCost,processDuration,canvasIcon,canvasMotion,animationFrame,iconRef,ensureEntry,ensureClosure,navigate,setMode,getCurrent,getAnimate,metrics}=api;
- const storageKey='dj2-map14-state',defaults={projection:'focus',depth:2,compactOR:true,dim:true,scope:'direct',pendingOnly:false};
+ const {$,data,R,Q,res,label,name,number,quantity,el,button,iconNode,recipeFor,recipeDetails,processCost,processDuration,canvasIcon,canvasMotion,animationFrame,iconRef,ensureEntry,ensureClosure,navigate,setMode,getCurrent,getAnimate,getCatalogRevision=()=>0,metrics}=api;
+ const storageKey='dj2-map14-state',defaults={projection:'focus',depth:'all',direction:'ingredients',compactOR:true,dim:true,scope:'chain',pendingOnly:false};
  let saved={};try{saved=JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch(_){}
  const prefs={...defaults};for(const key of ['compactOR','dim','pendingOnly'])if(typeof saved.preferences?.[key]==='boolean')prefs[key]=saved.preferences[key];
  if(['focus','global','areas'].includes(saved.preferences?.projection))prefs.projection=saved.preferences.projection;
- if([1,2,3].includes(saved.preferences?.depth))prefs.depth=saved.preferences.depth;
+ if(saved.preferences?.depth==='all'||(Number.isInteger(saved.preferences?.depth)&&saved.preferences.depth>=1&&saved.preferences.depth<=100))prefs.depth=saved.preferences.depth;
+ if(['ingredients','both'].includes(saved.preferences?.direction))prefs.direction=saved.preferences.direction;
  if(['direct','chain'].includes(saved.preferences?.scope))prefs.scope=saved.preferences.scope;
  const owned={},alternatives={};for(const [id,n]of Object.entries(saved.owned||{}))if(typeof n==='number'&&Number.isFinite(n)&&n>0)owned[id]=n;
  for(const [id,choice]of Object.entries(saved.alternatives||{}))if(typeof choice==='string')alternatives[id]=choice;
- let graphModel=null,projection=null,selected=getCurrent(),selectedArea=null,expandedAreas=[],related=new Set(),pathKeys=null,active=false;
+ let graphModel=null,projection=null,selected=getCurrent(),selectedArea=null,expandedAreas=[],related=new Set(),pathKeys=null,active=false,modelRevision=-1,projectionToken=0,cameraRevision=0;
  const canvas=$('map'),ctx=canvas.getContext('2d'),nodeW=260,nodeH=92,cellW=580,cellH=460;
- let width=0,height=0,transform={x:0,y:0,scale:1},nodes=[],edges=[],byKey=new Map(),buckets=new Map(),frame=0,colors={},overviewImage=null,viewStamp=0;
+ let width=0,height=0,transform={x:0,y:0,scale:1},nodes=[],edges=[],byKey=new Map(),buckets=new Map(),frame=0,colors={},overviewImage=null,overviewEdgeCount=0,viewStamp=0;
  const detailScale=.18,overviewScale=.13,pointers=new Map();let gesture=null,multiTouch=false,mapInViewport=false,animationSlots=[],animationTimer=0;
  let inspectorToken=0,lastInspector='',planToken=0,lastPlan=null,planPage=0,planTab='unresolved',planning=false;
  const inspector=$('map-inspector'),planPanel=$('planner-panel'),planStatus=$('plan-status'),planRows=$('plan-rows');
@@ -686,13 +761,15 @@ function installViewerUI14(api){
  function markOwned(id,amount){inventoryIndex=null;id=inventoryID(id);for(const key of Object.keys(owned))if(key!==id&&inventoryID(key)===id)delete owned[key];if(amount>0)owned[id]=amount;else delete owned[id];persist();overviewImage=null;requestDraw();inspect(selected,true);if(!planPanel.hidden)runPlan()}
  function isOwned(key){if(key[0]!=='i')return false;const id=key.slice(1);return inventoryAmount(id)>0}
  function optionsControl(id,value,callback){const control=$(id);control.value=String(value);control.onchange=()=>callback(control.value)}
- function checkControl(id,key){const control=$(id);control.checked=prefs[key];control.onchange=()=>{prefs[key]=control.checked;pathKeys=null;persist();if(key==='compactOR'||key==='pendingOnly')rebuild(true);else{highlight();overviewImage=null;requestDraw()}}}
- optionsControl('map-projection',prefs.projection,v=>{prefs.projection=v;selectedArea=null;persist();rebuild(true)});
- optionsControl('map-depth',prefs.depth,v=>{prefs.depth=Number(v);persist();rebuild(true)});
+ function checkControl(id,key){const control=$(id);control.checked=prefs[key];control.onchange=()=>{prefs[key]=control.checked;pathKeys=null;persist();if(key==='compactOR'||key==='pendingOnly'){cameraRevision++;rebuild(false)}else{highlight();overviewImage=null;requestDraw()}}}
+ optionsControl('map-projection',prefs.projection,v=>{prefs.projection=v;selectedArea=null;persist();prepareProjection({autofit:true})});
+ optionsControl('map-depth',prefs.depth,v=>{prefs.depth=v==='all'?'all':Number(v);if(v==='all'){prefs.scope='chain';$('map-scope').value='chain'}persist();prepareProjection({autofit:true})});
+ optionsControl('map-direction',prefs.direction,v=>{prefs.direction=v;persist();prepareProjection({autofit:true})});
  optionsControl('map-scope',prefs.scope,v=>{prefs.scope=v;pathKeys=null;persist();highlight();overviewImage=null;requestDraw()});
  checkControl('dim-unrelated','dim');checkControl('compact-or','compactOR');checkControl('pending-only','pendingOnly');
  $('map-path').onclick=()=>{if(!graphModel)return;const path=graphModel.path(selected,'i'+data.root,prefs.compactOR);if(!path.length){announce('No directed path to Key to Infinity exists for this selection in the selected route.');return}pathKeys=new Set(path);related=new Set(path.map(k=>projection.aliases[k]||k));overviewImage=null;requestDraw();announce('Path to Key to Infinity: '+path.length+' nodes. Select another node or change connection scope to clear it.')};
- $('map-reset').onclick=()=>{Object.assign(prefs,defaults);expandedAreas=[];selectedArea=null;pathKeys=null;for(const [id,key]of [['dim-unrelated','dim'],['compact-or','compactOR'],['pending-only','pendingOnly']])$(id).checked=prefs[key];$('map-projection').value=prefs.projection;$('map-depth').value=prefs.depth;$('map-scope').value=prefs.scope;persist();rebuild(true)};
+ $('map-reset').onclick=()=>{Object.assign(prefs,defaults);expandedAreas=[];selectedArea=null;pathKeys=null;for(const [id,key]of [['dim-unrelated','dim'],['compact-or','compactOR'],['pending-only','pendingOnly']])$(id).checked=prefs[key];$('map-projection').value=prefs.projection;$('map-depth').value=prefs.depth;$('map-direction').value=prefs.direction;$('map-scope').value=prefs.scope;persist();prepareProjection({autofit:true})};
+ $('full-chain-key').onclick=async()=>{Object.assign(prefs,{projection:'focus',depth:'all',direction:'ingredients',scope:'chain'});for(const [id,value]of [['map-projection','focus'],['map-depth','all'],['map-direction','ingredients'],['map-scope','chain']])$(id).value=value;selectedArea=null;persist();setMode('map');await navigate('i'+data.root,{center:false});prepareProjection({autofit:true})};
  $('zoom-in').onclick=()=>zoom(1.35);$('zoom-out').onclick=()=>zoom(1/1.35);$('fit-map').onclick=fit;$('center-map').onclick=()=>center(selected);
  $('open-selection').onclick=()=>{navigate(selected);setMode('recipe')};
  $('open-planner').onclick=()=>openPlan(selected[0]==='i'?selected.slice(1):Q[selected.slice(1)]?.outputs?.[0]?.id||data.root);
@@ -704,19 +781,19 @@ function installViewerUI14(api){
  $('export-plan').onclick=exportPlan;
  $('clear-progress').onclick=()=>{for(const k of Object.keys(owned))delete owned[k];inventoryIndex=null;persist();overviewImage=null;requestDraw();inspect(selected,true);if(!planPanel.hidden)runPlan();announce('Local inventory quantities cleared.')};
  function highlight(){
-  if(!projection)return;const keys=graphModel.relevant(selected,prefs.scope,prefs.compactOR);
+  if(!projection)return;const keys=prefs.projection==='focus'&&prefs.direction==='ingredients'?graphModel.dependencyKeys(selected,prefs.scope==='chain'?'all':1,prefs.compactOR):graphModel.relevant(selected,prefs.scope,prefs.compactOR);
   related=new Set([...keys].map(k=>projection.aliases[k]||k));related.add(projection.aliases[selected]||selected);
   if(selectedArea)related=new Set([selectedArea,...edges.filter(e=>e.a===selectedArea||e.b===selectedArea).flatMap(e=>[e.a,e.b])]);
  }
  function rebuild(autofit=false){
   if(!graphModel)return;
-  const started=performance.now();projection=graphModel.buildView({mode:prefs.projection,focus:selected,depth:prefs.depth,compactOR:prefs.compactOR,expandedAreas});
+  const started=performance.now();projection=graphModel.buildView({mode:prefs.projection,focus:selected,depth:prefs.depth,direction:prefs.direction,compactOR:prefs.compactOR,expandedAreas});
   nodes=projection.nodes.map(n=>({...n,label:n.type==='area'?n.label:label(n.key),words:(n.type==='area'?n.label:label(n.key)).split(/\s+/)}));
   if(prefs.pendingOnly)nodes=nodes.filter(n=>n.pending||n.ancestorPending||n.key===projection.selectedKey);
   const visible=new Set(nodes.map(n=>n.key));edges=projection.edges.filter(e=>visible.has(e.a)&&visible.has(e.b));byKey=new Map(nodes.map(n=>[n.key,n]));buckets=new Map();
   for(const n of nodes){const cell=Math.floor(n.x/cellW)+','+Math.floor(n.y/cellH);if(!buckets.has(cell))buckets.set(cell,[]);buckets.get(cell).push(n)}
-  pathKeys=null;highlight();overviewImage=null;viewStamp++;$('map-depth').disabled=prefs.projection!=='focus';
-  $('map-view-description').textContent=(prefs.projection==='focus'?'Local view · '+prefs.depth+' directed hops':prefs.projection==='areas'?'Areas grouped by mod and process labels':'Whole selected route')+' · '+nodes.length+' nodes · '+edges.length+' connections'+(projection.truncated?' · showing nearest '+nodes.length+' of '+projection.totalNodes+'; select a node to continue':'')+(prefs.pendingOnly?' · pending branches':'');
+  pathKeys=null;highlight();overviewImage=null;viewStamp++;$('map-depth').disabled=prefs.projection!=='focus';$('map-direction').disabled=prefs.projection!=='focus';
+  $('map-view-description').textContent=(prefs.projection==='focus'?(prefs.depth==='all'?'Full '+(prefs.direction==='ingredients'?'ingredient chain':'chain and uses')+' · no depth or node limit':prefs.depth+(prefs.depth===1?' hop · ':' hops · ')+(prefs.direction==='ingredients'?'ingredient dependencies':'ingredients and uses')):prefs.projection==='areas'?'Areas grouped by mod and process labels':'Whole selected route')+' · '+nodes.length+' nodes · '+edges.length+' connections'+(prefs.projection==='focus'&&prefs.depth==='all'?' · '+projection.nodes.filter(n=>n.boundary||n.pending).length+' unresolved boundaries':'')+(projection.truncated?' · showing '+nodes.length+' of '+projection.totalNodes:'')+(prefs.pendingOnly?' · pending branches':'');
   const chips=$('area-controls');chips.replaceChildren();if(prefs.projection==='areas'){for(const area of projection.areas.filter(a=>a.count)){const b=button((area.expanded?'− ': '+ ')+area.name+' ('+area.count+')',()=>{expandedAreas=area.expanded?expandedAreas.filter(n=>n!==area.name):[...expandedAreas,area.name];selectedArea=null;rebuild(true)});b.setAttribute('aria-pressed',String(area.expanded));chips.append(b)}chips.append(el('span','notice','Area grouping is a navigation aid, not a progression tier.'))}
   renderNodeList();metrics.projectionMs=performance.now()-started;metrics.projectionNodes=nodes.length;metrics.projectionEdges=edges.length;
   if(autofit){fit();if(prefs.projection==='focus'&&transform.scale<.55)center(selected)}else requestDraw();inspect(selected,true);
@@ -727,14 +804,22 @@ function installViewerUI14(api){
   function paint(){rows.replaceChildren();displayed.slice(offset,offset+20).forEach(n=>{const b=button('',()=>navigate(n.key,{center:true}));b.append(iconNode(n.key),el('span','',n.label));rows.append(b)});pager.replaceChildren();if(displayed.length>20){const prev=button('Previous',()=>{offset=Math.max(0,offset-20);paint()}),next=button('Next',()=>{offset+=20;paint()});prev.disabled=offset===0;next.disabled=offset+20>=displayed.length;pager.append(prev,el('span','',(offset+1)+'–'+Math.min(offset+20,displayed.length)+' of '+displayed.length),next)}}
   paint();list.append(rows,pager);if(!displayed.length)list.append(el('p','notice','Expand an area or use search to select a resource.'));
  }
- function activate(key){active=true;if(!graphModel){const t=performance.now();graphModel=createMapModel(data);metrics.graphModelMs=performance.now()-t}if(!projection||key!==selected){selected=key;rebuild(true)}else{resize();requestDraw()}inspect(selected);}
- function deactivate(){active=false;animationSlots=[];clearTimeout(animationTimer);animationTimer=0}
+ async function prepareProjection({autofit=false,center:shouldCenter=false}={}){
+  if(!active)return;const token=++projectionToken,key=selected,cameraAtStart=cameraRevision;canvas.setAttribute('aria-busy','true');$('map-status').textContent='Preparing ingredient chain…';
+  try{
+   if(prefs.projection==='focus')await ensureClosure(key[0]==='i'?key.slice(1):key,{maxKeys:'all'});
+   if(token!==projectionToken||!active||selected!==key)return;
+   const revision=getCatalogRevision();if(!graphModel||modelRevision!==revision){const started=performance.now();graphModel=createMapModel(data);modelRevision=revision;metrics.graphModelMs=performance.now()-started}
+   rebuild(autofit&&cameraRevision===cameraAtStart);if(shouldCenter&&!autofit&&cameraRevision===cameraAtStart)center(key);
+  }catch(error){if(token===projectionToken)announce('The ingredient chain could not be prepared: '+error.message)}finally{if(token===projectionToken)canvas.removeAttribute('aria-busy')}
+ }
+ function activate(key){const changed=selected!==key;active=true;selected=key;resize();prepareProjection({autofit:!projection||changed});inspect(selected);}
+ function deactivate(){active=false;projectionToken++;animationSlots=[];clearTimeout(animationTimer);animationTimer=0}
  function select(key,{center:shouldCenter=false}={}){
   const changed=selected!==key;selected=key;selectedArea=null;pathKeys=null;lastInspector='';$('map-feedback').textContent='';
-  if(!graphModel)return;
-  if(changed&&((prefs.projection==='focus'&&graphModel.neighborhood(key,1,prefs.compactOR).size)||prefs.pendingOnly))rebuild(prefs.projection==='focus');else{projection.selectedKey=projection.aliases[key]||key;highlight();overviewImage=null;renderNodeList();inspect(key);if(shouldCenter)center(key);else requestDraw()}
+  prepareProjection({autofit:changed&&prefs.projection==='focus',center:shouldCenter});
  }
- function fit(){if(!projection||!width||!height)return;const x0=Math.min(0,...nodes.map(n=>n.x)),y0=Math.min(0,...nodes.map(n=>n.y)),w=Math.max(300,...nodes.map(n=>n.x+nodeW))-x0,h=Math.max(128,...nodes.map(n=>n.y+nodeH))-y0;const scale=Math.max(.005,Math.min(1,(width-36)/w,(height-36)/h));transform={scale,x:(width-w*scale)/2-x0*scale,y:(height-h*scale)/2-y0*scale};requestDraw()}
+ function fit(){if(!projection||!width||!height||!nodes.length)return;let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;for(const n of nodes){x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+nodeW);y1=Math.max(y1,n.y+nodeH)}const w=Math.max(nodeW,x1-x0),h=Math.max(nodeH,y1-y0),scale=Math.max(.0001,Math.min(1,(width-36)/w,(height-36)/h));transform={scale,x:(width-w*scale)/2-x0*scale,y:(height-h*scale)/2-y0*scale};requestDraw()}
  function center(key){if(!projection)return;const n=byKey.get(projection.aliases[key]||key);if(!n){announce('This catalog entry is outside the selected route. Its recipe is available in the inspector.');requestDraw();return}const scale=Math.min(1,Math.max(.65,width/1100));transform={scale,x:width/2-(n.x+nodeW/2)*scale,y:height/2-(n.y+nodeH/2)*scale};requestDraw()}
  function resize(){const rect=canvas.getBoundingClientRect();if(!rect.width)return;const first=!width,previousWidth=width;width=rect.width;height=rect.height;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const css=getComputedStyle(document.documentElement),probe=el('span');probe.hidden=true;document.body.append(probe);for(const [key,variable]of Object.entries({ink:'ink',muted:'muted',line:'line',accent:'accent',surface:'surface',process:'process',raw:'raw',soft:'soft',resource:'resource',resourceDot:'resource-dot',processDot:'process-dot',rawDot:'raw-dot'})){probe.style.color=css.getPropertyValue('--'+variable).trim();colors[key]=getComputedStyle(probe).color}probe.remove();overviewImage=null;if(first||(active&&previousWidth&&Math.abs(width/previousWidth-1)>.2)){fit();if(prefs.projection==='focus'&&transform.scale<.55)center(selected)}requestDraw()}
  new ResizeObserver(resize).observe(canvas);matchMedia('(prefers-color-scheme:dark)').addEventListener('change',resize);
@@ -742,14 +827,20 @@ function installViewerUI14(api){
  function visibleNodes(){const s=transform.scale,x0=-transform.x/s-nodeW,y0=-transform.y/s-nodeH,x1=(width-transform.x)/s,y1=(height-transform.y)/s;if(s<overviewScale)return nodes;const result=[];for(let col=Math.floor(x0/cellW);col<=Math.floor(x1/cellW);col++)for(let row=Math.floor(y0/cellH);row<=Math.floor(y1/cellH);row++)for(const n of buckets.get(col+','+row)||[])if(n.x+nodeW>=x0&&n.x<=x1&&n.y+nodeH>=y0&&n.y<=y1)result.push(n);return result}
  function opacity(n){return prefs.dim&&!related.has(n.key)?.14:1}
  function background(n){return n.key===(selectedArea||projection.selectedKey)?colors.soft:n.type==='process'?colors.process:n.type==='raw'?colors.raw:colors.resource}
- function panorama(){if(overviewImage)return overviewImage;const c=document.createElement('canvas'),ratio=2048/Math.max(1,projection.width);c.width=2048;c.height=Math.max(1,Math.ceil(projection.height*ratio));const g=c.getContext('2d');for(const n of nodes){g.globalAlpha=opacity(n);g.fillStyle=isOwned(n.key)?'#258357':n.pending?'#b57816':n.type==='process'?colors.processDot:n.type==='raw'?colors.rawDot:colors.resourceDot;g.fillRect(n.x*ratio,n.y*ratio,Math.max(1,nodeW*ratio),Math.max(1,nodeH*ratio))}overviewImage=c;return c}
+ function panorama(){
+  if(overviewImage)return overviewImage;const c=document.createElement('canvas'),ratio=2048/Math.max(1,projection.width);c.width=2048;c.height=Math.max(1,Math.ceil(projection.height*ratio));const g=c.getContext('2d');overviewEdgeCount=0;
+  g.strokeStyle=colors.accent;g.lineWidth=.9;
+  for(const edge of edges){const relevant=related.has(edge.a)&&related.has(edge.b);if(prefs.projection==='global'&&!relevant)continue;const a=byKey.get(edge.a),b=byKey.get(edge.b);if(!a||!b)continue;g.globalAlpha=relevant?.35:prefs.dim?.04:.12;const x1=(a.x+nodeW)*ratio,y1=(a.y+nodeH/2)*ratio,x2=b.x*ratio,y2=(b.y+nodeH/2)*ratio,mid=(x1+x2)/2;g.beginPath();g.moveTo(x1,y1);g.bezierCurveTo(mid,y1,mid,y2,x2,y2);g.stroke();overviewEdgeCount++}
+  for(const n of nodes){g.globalAlpha=opacity(n);g.fillStyle=isOwned(n.key)?'#258357':n.pending?'#b57816':n.type==='process'?colors.processDot:n.type==='raw'?colors.rawDot:colors.resourceDot;g.fillRect(n.x*ratio,n.y*ratio,Math.max(1,nodeW*ratio),Math.max(1,nodeH*ratio))}overviewImage=c;return c;
+ }
+
  function lines(n,size,max,maxLines){const sig=size+':'+max+':'+maxLines;if(n.sig===sig)return n.lines;const result=[];let line='';for(const word of n.words){const next=line?line+' '+word:word;if(line&&ctx.measureText(next).width>max){result.push(line);line=word}else line=next}if(line)result.push(line);const out=result.slice(0,maxLines);if(result.length>maxLines)out[maxLines-1]+='…';for(let i=0;i<out.length;i++)if(ctx.measureText(out[i]).width>max){let lo=0,hi=out[i].length;while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(ctx.measureText(out[i].slice(0,mid)+'…').width<=max)lo=mid;else hi=mid-1}out[i]=out[i].slice(0,lo)+'…'}n.sig=sig;n.lines=out;return out}
  function requestDraw(){if(!active||frame||!width)return;frame=requestAnimationFrame(()=>{frame=0;draw()})}
  function draw(){
   if(!projection||!active)return;const started=performance.now(),s=transform.scale,sx=x=>x*s+transform.x,sy=y=>y*s+transform.y,visible=visibleNodes();let drawnEdges=0,details=0,dimmed=0;animationSlots=[];ctx.clearRect(0,0,width,height);
-  if(s<overviewScale)ctx.drawImage(panorama(),transform.x,transform.y,projection.width*s,projection.height*s);
+  if(s<overviewScale){ctx.drawImage(panorama(),transform.x,transform.y,projection.width*s,projection.height*s);drawnEdges=overviewEdgeCount}
   ctx.save();ctx.lineWidth=Math.max(.65,Math.min(1.2,3*s));ctx.strokeStyle=colors.accent;ctx.fillStyle=colors.accent;
-  for(const e of edges){const relevant=related.has(e.a)&&related.has(e.b);if(prefs.projection==='global'&&!relevant)continue;const a=byKey.get(e.a),b=byKey.get(e.b);if(!a||!b)continue;const x1=sx(a.x+nodeW),y1=sy(a.y+nodeH/2),x2=sx(b.x),y2=sy(b.y+nodeH/2);if(Math.max(x1,x2)<0||Math.min(x1,x2)>width||Math.max(y1,y2)<0||Math.min(y1,y2)>height)continue;ctx.globalAlpha=relevant?.75:prefs.dim?.07:.23;ctx.setLineDash(e.reuse?[5,4]:[]);ctx.beginPath();ctx.moveTo(x1,y1);const mid=(x1+x2)/2;ctx.bezierCurveTo(mid,y1,mid,y2,x2,y2);ctx.stroke();if(relevant){const arrow=Math.max(2,Math.min(5,6*s));ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-arrow,y2-arrow*.6);ctx.lineTo(x2-arrow,y2+arrow*.6);ctx.closePath();ctx.fill()}drawnEdges++}ctx.restore();
+  for(const e of edges){if(s<overviewScale&&e.a!==projection.selectedKey&&e.b!==projection.selectedKey)continue;const relevant=related.has(e.a)&&related.has(e.b);if(prefs.projection==='global'&&!relevant)continue;const a=byKey.get(e.a),b=byKey.get(e.b);if(!a||!b)continue;const x1=sx(a.x+nodeW),y1=sy(a.y+nodeH/2),x2=sx(b.x),y2=sy(b.y+nodeH/2);if(Math.max(x1,x2)<0||Math.min(x1,x2)>width||Math.max(y1,y2)<0||Math.min(y1,y2)>height)continue;ctx.globalAlpha=relevant?.75:prefs.dim?.07:.23;ctx.setLineDash(e.reuse?[5,4]:[]);ctx.beginPath();ctx.moveTo(x1,y1);const mid=(x1+x2)/2;ctx.bezierCurveTo(mid,y1,mid,y2,x2,y2);ctx.stroke();if(relevant){const arrow=Math.max(2,Math.min(5,6*s));ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-arrow,y2-arrow*.6);ctx.lineTo(x2-arrow,y2+arrow*.6);ctx.closePath();ctx.fill()}drawnEdges++}ctx.restore();
   if(s>=overviewScale)for(const n of visible){const x=sx(n.x),y=sy(n.y),w=nodeW*s,h=nodeH*s,selectedNode=n.key===(selectedArea||projection.selectedKey),alpha=opacity(n);if(alpha<1)dimmed++;ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=background(n);ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(8,8*s));ctx.fill();ctx.strokeStyle=selectedNode?colors.accent:n.pending?'#b57816':isOwned(n.key)?'#258357':colors.line;ctx.lineWidth=selectedNode?2:1;ctx.stroke();
    if(s>=detailScale){const pad=Math.max(2,Math.min(8,8*s)),image=n.type==='area'?null:canvasIcon(n.key),imageSize=Math.min(32,Math.max(7,28*s)),offset=pad+(image?imageSize+Math.max(2,6*s):0);ctx.beginPath();ctx.rect(x+pad,y+pad,w-2*pad,h-2*pad);ctx.clip();if(image){ctx.imageSmoothingEnabled=false;const ix=x+pad,iy=y+(h-imageSize)/2,motion=alpha===1&&getAnimate()&&!document.hidden?canvasMotion(iconRef(n.key)):null;if(motion){const frame=animationFrame(motion.spec,started);ctx.drawImage(motion.image,0,frame*32,32,32,ix,iy,imageSize,imageSize);animationSlots.push({motion,frame,x:ix,y:iy,size:imageSize,background:background(n)})}else ctx.drawImage(image,ix,iy,imageSize,imageSize)}const fontSize=Math.max(6,Math.min(19,Math.round(15*s*2)/2)),gap=Math.max(1,3*s),maxLines=Math.max(1,Math.min(3,Math.floor((h-pad*2)/(fontSize+gap))));ctx.font='500 '+fontSize+'px system-ui';ctx.fillStyle=colors.ink;const text=lines(n,fontSize,w-offset-pad,maxLines),top=y+Math.max(pad,(h-text.length*(fontSize+gap))/2);text.forEach((line,row)=>ctx.fillText(line,x+offset,top+fontSize+row*(fontSize+gap)));details++}
    ctx.restore();if(s>=.4&&(n.pending||isOwned(n.key))){ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=n.pending?'#b57816':'#258357';ctx.beginPath();ctx.arc(x+w-5,y+5,Math.max(5,7*s),0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold '+Math.max(8,10*s)+'px system-ui';ctx.textAlign='center';ctx.fillText(n.pending?'?':'✓',x+w-5,y+8*s);ctx.textAlign='start';ctx.restore()}
@@ -757,14 +848,14 @@ function installViewerUI14(api){
   const n=byKey.get(selectedArea||projection.selectedKey);if(s<detailScale&&n){const x=sx(n.x+nodeW/2),y=sy(n.y+nodeH/2);if(x>=0&&x<=width&&y>=0&&y<=height){ctx.fillStyle=colors.accent;ctx.beginPath();ctx.arc(x,y,5,0,2*Math.PI);ctx.fill();ctx.font='500 13px system-ui';const text=n.label.slice(0,45),tw=ctx.measureText(text).width,tx=Math.max(8,Math.min(width-tw-12,x+10)),ty=Math.max(24,y-14);ctx.fillStyle=colors.surface;ctx.fillRect(tx-4,ty-16,tw+8,22);ctx.fillStyle=colors.ink;ctx.fillText(text,tx,ty)}}
   $('map-status').textContent=Math.round(s*100)+'% · '+(s<detailScale?'Overview':visible.length+' on screen')+(prefs.dim?' · unrelated dimmed':'');
   const elapsed=performance.now()-started;metrics.mapFrames.push(elapsed);if(metrics.mapFrames.length>200)metrics.mapFrames.shift();metrics.visibleNodes=visible.length;metrics.canvasFrames=(metrics.canvasFrames||0)+1;
-  Object.assign(canvas.dataset,{zoom:String(s),detailNodes:String(details),drawnEdges:String(drawnEdges),dimmedNodes:String(s<overviewScale?nodes.filter(n=>opacity(n)<1).length:dimmed),relevantNodes:String(related.size),dimEnabled:String(prefs.dim),projection:prefs.projection,frameMs:elapsed.toFixed(2),animatedIcons:String(animationSlots.length),viewStamp:String(viewStamp)});scheduleMapAnimation();
+  Object.assign(canvas.dataset,{zoom:String(s),detailNodes:String(details),drawnEdges:String(drawnEdges),dimmedNodes:String(s<overviewScale?nodes.filter(n=>opacity(n)<1).length:dimmed),relevantNodes:String(related.size),dimEnabled:String(prefs.dim),projection:prefs.projection,depth:String(prefs.depth),direction:prefs.direction,panX:String(transform.x),panY:String(transform.y),totalNodes:String(nodes.length),frameMs:elapsed.toFixed(2),animatedIcons:String(animationSlots.length),viewStamp:String(viewStamp)});scheduleMapAnimation();
  }
  function scheduleMapAnimation(){if(animationTimer||!active||!getAnimate()||document.hidden||!mapInViewport||!animationSlots.length)return;animationTimer=setTimeout(()=>{animationTimer=0;if(!active||!getAnimate()||document.hidden||!mapInViewport)return;const t=performance.now();let changed=0;for(const slot of animationSlots){const frame=animationFrame(slot.motion.spec,t);if(frame===slot.frame)continue;slot.frame=frame;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle=slot.background;ctx.fillRect(slot.x,slot.y,slot.size,slot.size);ctx.drawImage(slot.motion.image,0,frame*32,32,32,slot.x,slot.y,slot.size,slot.size);ctx.restore();changed++}canvas.dataset.animationUpdates=String(Number(canvas.dataset.animationUpdates||0)+changed);scheduleMapAnimation()},50)}
- function zoom(factor,cx=width/2,cy=height/2){const old=transform.scale,next=Math.max(.005,Math.min(2.5,old*factor));transform={x:cx-(cx-transform.x)*next/old,y:cy-(cy-transform.y)*next/old,scale:next};requestDraw()}
+ function zoom(factor,cx=width/2,cy=height/2){const old=transform.scale,next=Math.max(.0001,Math.min(2.5,old*factor));transform={x:cx-(cx-transform.x)*next/old,y:cy-(cy-transform.y)*next/old,scale:next};requestDraw()}
  canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect();zoom(Math.exp(-Math.max(-100,Math.min(100,e.deltaY))*.003),e.clientX-r.left,e.clientY-r.top)},{passive:false});
  function resetGesture(){const points=[...pointers.values()];if(!points.length){gesture=null;return}const mid=points.length===1?points[0]:{x:(points[0].x+points[1].x)/2,y:(points[0].y+points[1].y)/2};gesture={start:{...transform},mid,distance:points.length>1?Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y):0,moved:false,pinch:points.length>1}}
  canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>1)multiTouch=true;resetGesture()});
- canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId)||!gesture)return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const pts=[...pointers.values()],mid=pts.length===1?pts[0]:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};if(pts.length>1&&gesture.distance){const distance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y),s=Math.min(2.5,Math.max(.005,gesture.start.scale*distance/gesture.distance)),rect=canvas.getBoundingClientRect(),cx=gesture.mid.x-rect.left,cy=gesture.mid.y-rect.top;transform={scale:s,x:cx-(cx-gesture.start.x)*s/gesture.start.scale+mid.x-gesture.mid.x,y:cy-(cy-gesture.start.y)*s/gesture.start.scale+mid.y-gesture.mid.y};gesture.moved=true}else{const dx=mid.x-gesture.mid.x,dy=mid.y-gesture.mid.y;transform.x=gesture.start.x+dx;transform.y=gesture.start.y+dy;if(Math.abs(dx)+Math.abs(dy)>4)gesture.moved=true}requestDraw()});
+ canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId)||!gesture)return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const pts=[...pointers.values()],mid=pts.length===1?pts[0]:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};if(pts.length>1&&gesture.distance){const distance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y),s=Math.min(2.5,Math.max(.0001,gesture.start.scale*distance/gesture.distance)),rect=canvas.getBoundingClientRect(),cx=gesture.mid.x-rect.left,cy=gesture.mid.y-rect.top;transform={scale:s,x:cx-(cx-gesture.start.x)*s/gesture.start.scale+mid.x-gesture.mid.x,y:cy-(cy-gesture.start.y)*s/gesture.start.scale+mid.y-gesture.mid.y};gesture.moved=true}else{const dx=mid.x-gesture.mid.x,dy=mid.y-gesture.mid.y;transform.x=gesture.start.x+dx;transform.y=gesture.start.y+dy;if(Math.abs(dx)+Math.abs(dy)>4)gesture.moved=true}requestDraw()});
  canvas.addEventListener('pointerup',e=>{if(gesture&&!gesture.moved&&!gesture.pinch&&!multiTouch){const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left-transform.x)/transform.scale,y=(e.clientY-rect.top-transform.y)/transform.scale,candidates=[];for(let col=Math.floor((x-nodeW)/cellW);col<=Math.floor(x/cellW);col++)for(let row=Math.floor((y-nodeH)/cellH);row<=Math.floor(y/cellH);row++)candidates.push(...(buckets.get(col+','+row)||[]));const n=candidates.reverse().find(n=>x>=n.x&&x<=n.x+nodeW&&y>=n.y&&y<=n.y+nodeH);if(n?.type==='area')inspectArea(n);else if(n)navigate(n.key,{center:false})}pointers.delete(e.pointerId);if(!pointers.size)multiTouch=false;resetGesture()});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);if(!pointers.size)multiTouch=false;resetGesture()});
  function inspectArea(n){inspectorToken++;lastInspector='';inspector.removeAttribute('aria-busy');selectedArea=n.key;highlight();overviewImage=null;requestDraw();inspector.replaceChildren(el('h3','',n.area),el('p','',n.count+' route nodes · '+(n.pendingCount||0)+' resources awaiting verification'),button('Expand this area',()=>{expandedAreas=[...new Set([...expandedAreas,n.area])];selectedArea=null;rebuild(true)}));renderNodeList()}
@@ -827,7 +918,8 @@ catch(error){view.replaceChildren();const warning=document.createElement('p');wa
 const R=data.resources,Q=data.recipes,fmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:6}),pageSize=8;
 const icons=data.icons||{images:{},resources:{},machines:{},rawMachines:{}},mapIconCache=new Map();
 const staged=data._staged,lightIndex=new Map((staged?.searchIndex||[]).map(hit=>[hit.key,hit]));
-const loader=createViewerLoader14(data,decode,(chunk)=>{if(chunk.recipes){indexRecipes();metrics.loadedResources=Object.keys(R).length;metrics.loadedRecipes=Object.keys(Q).length}requestDraw()},(error)=>{$('announcement').textContent='Deferred data could not be loaded: '+error.message});
+let catalogRevision=0;
+const loader=createViewerLoader14(data,decode,(chunk)=>{if(chunk.recipes){catalogRevision++;indexRecipes();metrics.loadedResources=Object.keys(R).length;metrics.loadedRecipes=Object.keys(Q).length}requestDraw()},(error)=>{$('announcement').textContent='Deferred data could not be loaded: '+error.message});
 const ensureEntry=key=>loader.ensureEntry(key),ensureClosure=(id,options)=>loader.ensureClosure(id,options);
 const choiceImages=new Set(icons.choiceImages||[]);
 const basePreviewImages=new Set(icons.basePreviewImages||[]);
@@ -846,7 +938,7 @@ motionPreference.addEventListener('change',()=>{animateIcons=!motionPreference.m
 document.addEventListener('visibilitychange',updateMotionPreference);
 const pendingStatus=[];
 for(const [field,label]of [['unprovenLeaves','dependencies awaiting verification'],['selectedPartialRecipes','selected partial recipes'],['selectedUnresolvedRegistryRecipes','selected recipes with unresolved registry entries']]){const count=data.routeSummary?.[field];if(Number.isInteger(count)&&count>0)pendingStatus.push(fmt.format(count)+' '+label)}
-if(pendingStatus.length)$('research-status').textContent='Work in progress · Research route incomplete. '+pendingStatus.join(' · ')+'. Quantities are for one run of each recipe. Random yields are stated on each card.';
+if(pendingStatus.length)$('research-status').textContent='Work in progress · Core research route incomplete. '+pendingStatus.join(' · ')+'. Quantities are for one run of each recipe. Random yields are stated on each card.';
 const clean=s=>String(s??'').replace(/§./g,'').replace(/^mods\.extendedcrafting\.TableCrafting$/,'Table Crafting · Extended Crafting'),fold=s=>clean(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const res=id=>R[id]||{name:lightIndex.get('i'+id)?.title||id,kind:lightIndex.get('i'+id)?.kind==='Fluid'?'fluid':'item',status:'missing',icon:lightIndex.get('i'+id)?.icon};
 const name=id=>clean(res(id).name);
@@ -1092,7 +1184,7 @@ function setMode(next){
 }
 $('recipe-mode').onclick=()=>setMode('recipe');$('chain-mode').onclick=()=>setMode('chain');$('map-mode').onclick=()=>setMode('map');
 let mapSelected=home;
-const ui14=installViewerUI14({$,data,R,Q,res,label,name,number,quantity,el,button,iconNode,recipeFor,recipeDetails,processCost,processDuration,canvasIcon,canvasMotion,animationFrame,iconRef,ensureEntry,ensureClosure,navigate,setMode,getCurrent:current,getAnimate:()=>animateIcons,metrics});
+const ui14=installViewerUI14({$,data,R,Q,res,label,name,number,quantity,el,button,iconNode,recipeFor,recipeDetails,processCost,processDuration,canvasIcon,canvasMotion,animationFrame,iconRef,ensureEntry,ensureClosure,navigate,setMode,getCurrent:current,getCatalogRevision:()=>catalogRevision,getAnimate:()=>animateIcons,metrics});
 function requestDraw(){ui14.requestDraw()}
 function scheduleMapAnimation(){ui14.scheduleMapAnimation()}
 function focusMap(key){ui14.select(key,{center:true})}

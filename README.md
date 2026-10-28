@@ -16,14 +16,14 @@ Cards, search, ingredient chains and the map now use 24,531 direct resource text
 
 [**Open the diagram in your browser**](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/).
 
-Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r14), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
+Download the [updated preview package](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261027-r15), extract it and open `index.html` in a modern browser. It works offline without a server. GitHub displays HTML source files as code; use the download to open the viewer.
 
 - **By recipe:** select an ingredient to follow its crafting chain.
 - **Expandable chain:** open only the branches you want to inspect.
-- **Focused chain:** explore 1, 2 or 3 directed hops around the selection. The nearest 360 nodes are shown for large hubs; select a node to continue.
+- **Focused chain:** choose 1–100 hops or **Full chain**, with no depth or node cap. **Ingredients** recursively follows every selected producer and required input, including resources outside the core route. **Ingredients and uses** adds downstream uses. **Full chain to Key** opens the main objective directly.
 - **Dim unrelated:** fade cards, text, icons and badges outside the selected scope. Toggle it off to restore normal opacity. Choose direct connections or the dependency chain; it also works far zoomed out.
 - **Whole route / Areas:** keep the full route accessible, or expand navigation groups such as Chemistry, Electronics, Magic and Infrastructure. These are navigation groups, not progression tiers.
-- **Compact OR:** collapse transparent alternative helpers while retaining every option in the inspector. OR choices affect the material plan; the map retains the researched route.
+- **Compact OR:** collapse transparent alternative helpers while retaining every option in the inspector. Compact OR and Pending branches preserve the current zoom and pan. Surviving nodes in focused chains also retain their positions. OR choices affect the material plan; the map retains the researched route.
 - **Recipe inspector:** select map nodes to read ingredients, quantities, grids and conditions without leaving the map. Whole-route selections preserve pan and zoom.
 - **Progress and paths:** record inventory quantities in this browser, highlight a path to Key to Infinity, or show branches with unverified recipes.
 - **Material plan:** enter a target quantity, deduct recorded inventory, inspect shared batch counts and reusable tools, and export CSV. Random, symbolic and unsupported routes remain explicit unresolved boundaries.
