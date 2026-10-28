@@ -7,34 +7,51 @@
   "completeDependencyClosure": false,
   "runId": "20261026-001256",
   "routeSummary": {
-    "candidateStacksExamined": 24704,
-    "selectedStacks": 4748,
-    "selectedRecipes": 2007,
-    "selectedAlternatives": 908,
-    "selectedSemanticMatches": 1641,
-    "selectedWildcardMatches": 24,
-    "selectedTaggedVariantMatches": 89,
+    "candidateStacksExamined": 27637,
+    "selectedStacks": 4998,
+    "selectedRecipes": 2141,
+    "selectedAlternatives": 959,
+    "selectedSemanticMatches": 1716,
+    "selectedWildcardMatches": 25,
+    "selectedTaggedVariantMatches": 90,
     "selectedAspectCrystalAliases": 0,
-    "provenAcquisitionLeaves": 101,
-    "selectedAcquisitionProcesses": 42,
-    "unprovenLeaves": 49,
-    "cyclicCandidateStacks": 2465,
+    "provenAcquisitionLeaves": 102,
+    "selectedAcquisitionProcesses": 51,
+    "unprovenLeaves": 29,
+    "cyclicCandidateStacks": 4581,
     "selectedPartialRecipes": 0,
     "selectedUnresolvedRegistryRecipes": 0,
-    "recipesWithConditions": 874,
-    "recipesWithRequirements": 1300,
+    "recipesWithConditions": 938,
+    "recipesWithRequirements": 1375,
     "oreSnapshotImported": true,
-    "explicitAcquisitionRecordsAccepted": 172,
+    "explicitAcquisitionRecordsAccepted": 213,
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 42267,
-  "catalogRecipes": 36964,
-  "viewerSha256": "4ab442556a7febb1e4633b4e616890469fe035c22d1e13d90eeba5b3329f4a4b",
-  "dataSha256": "dcf02fc847869341944e655c71c76720865fbcc943bb03dab1449339567458d2",
+  "catalogResources": 43911,
+  "catalogRecipes": 38648,
+  "viewerSha256": "b287c19a4faa7d66efcb5e2460c71a04826960764f2bea6636c3858366078706",
+  "dataSha256": "55248373914a5c395c6041f5336cd1bbad279086ad2942c8ed34a960805a6c52",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
+  "fullIngredientGraph": {
+    "nodes": 10049,
+    "edges": 17944,
+    "counts": {
+      "resource": 5164,
+      "process": 4885
+    },
+    "missingCount": 166,
+    "unverifiedProcessCount": 19,
+    "totalUnresolvedBoundaries": 185,
+    "compact": {
+      "nodes": 9867,
+      "edges": 17762
+    },
+    "truncated": false,
+    "depth": "all"
+  },
   "iconAnimation": {
-    "uniqueAnimations": 812,
+    "uniqueAnimations": 820,
     "staticFallback": true,
     "visibleIconsOnly": true,
     "motionToggle": true
@@ -54,35 +71,38 @@
     "catalogIngredientChains": true,
     "unlimitedChainDepth": true,
     "filterTogglesPreserveViewport": true,
-    "streamingChunksWaitForCompletion": true
+    "streamingChunksWaitForCompletion": true,
+    "minimalPlannerWorkerData": true,
+    "cancelSupersededPlans": true,
+    "boundedIngredientGraphCache": true
   },
   "stagedPayload": {
-    "fullResources": 42267,
-    "fullRecipes": 36964,
-    "initialResources": 4904,
-    "initialRecipes": 3079,
-    "initialDecodedBytes": 32689661,
-    "fullDecodedBytes": 164850332,
-    "initialDecodedReductionPercent": 80.17,
-    "initialGzipBase64Bytes": 4197568,
-    "fullGzipBase64Bytes": 37178764,
+    "fullResources": 43911,
+    "fullRecipes": 38648,
+    "initialResources": 21367,
+    "initialRecipes": 10524,
+    "initialDecodedBytes": 52925060,
+    "fullDecodedBytes": 123504422,
+    "initialDecodedReductionPercent": 57.15,
+    "initialGzipBase64Bytes": 5627388,
+    "fullGzipBase64Bytes": 35223616,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
-      "catalogChunks": 310,
+      "catalogChunks": 323,
       "iconChunks": 177,
-      "animationChunks": 176
+      "animationChunks": 177
     },
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 42267,
+    "resourceDenominator": 43911,
     "resourceCoverage": {
-      "fallback": 15869,
-      "asset": 24531,
-      "representative": 1867
+      "asset": 24574,
+      "fallback": 17439,
+      "representative": 1898
     },
-    "machineDenominator": 299,
+    "machineDenominator": 338,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
