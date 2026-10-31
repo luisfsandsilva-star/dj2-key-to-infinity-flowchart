@@ -17,8 +17,8 @@ Animate icons toggles animated textures in cards, search and the map. A visible 
 
 OR candidate previews carry an OR badge. Some state-dependent or custom-rendered entries use labeled base texture previews. Unknown or protected entries retain explicit type symbols.
 
-Status: Work in progress. Core selected route: 5 unresolved boundaries.
-Selected route: 5742 resources and 2496 recipes.
+Status: Work in progress. Core selected route: 4 unresolved boundaries.
+Selected route: 5747 resources and 2498 recipes.
 Quantities belong to each recipe; they are not an accumulated total cost.
 Choose one OR alternative at a time. Check random yields and conditions.
 The stated world access, permissions, structures and conditions must hold.
@@ -27,6 +27,6 @@ Protected narrative note content is excluded.
 viewer-data.json.gz contains the complete unchanged filtered data reconstructed from the HTML chunks.
 status.json records the version, scope, counts and hashes for package verification.
 
-Full ingredient graph: 5623 nodes and 10259 connections; 5 resource boundaries and 0 unverified process previews. These include catalogue branches beyond the core selected route. A connected preview does not establish that its output is obtainable.
+Full ingredient graph: 5611 nodes and 10226 connections; 4 resource boundaries and 0 unverified process previews. These include catalogue branches beyond the core selected route. A connected preview does not establish that its output is obtainable.
 
-Initial-stock boundaries: 5. Structural dependency cycle groups: 3. A cycle is a structural warning, not proof that every member is unobtainable. Candidate recipes remain inspectable; material plans require actual owned starting stock at the marked cuts.
+Initial-stock boundaries: 4. Structural dependency cycle groups: 4. A cycle is a structural warning, not proof that every member is unobtainable. Candidate recipes remain inspectable; material plans require actual owned starting stock at the marked cuts.
