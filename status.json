@@ -8,44 +8,44 @@
   "runId": "20261026-001256",
   "routeSummary": {
     "candidateStacksExamined": 27690,
-    "selectedStacks": 5329,
-    "selectedRecipes": 2301,
-    "selectedAlternatives": 1017,
-    "selectedSemanticMatches": 1839,
+    "selectedStacks": 5356,
+    "selectedRecipes": 2313,
+    "selectedAlternatives": 1022,
+    "selectedSemanticMatches": 1850,
     "selectedWildcardMatches": 25,
     "selectedTaggedVariantMatches": 93,
     "selectedAspectCrystalAliases": 0,
     "provenAcquisitionLeaves": 103,
     "selectedAcquisitionProcesses": 55,
-    "unprovenLeaves": 14,
-    "cyclicCandidateStacks": 4654,
+    "unprovenLeaves": 13,
+    "cyclicCandidateStacks": 4744,
     "selectedPartialRecipes": 0,
     "selectedUnresolvedRegistryRecipes": 0,
-    "recipesWithConditions": 1004,
-    "recipesWithRequirements": 1466,
+    "recipesWithConditions": 1007,
+    "recipesWithRequirements": 1470,
     "oreSnapshotImported": true,
     "explicitAcquisitionRecordsAccepted": 215,
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 43983,
-  "catalogRecipes": 38738,
-  "viewerSha256": "6fa25948deaa4942c732be6830d3ff499c46ff0acb9082fe2fb8f1573b10b8ea",
-  "dataSha256": "d051ad3ee45341f2a3f20628505ee375c716718d1a99c25b72a338f80237577d",
+  "catalogResources": 43986,
+  "catalogRecipes": 38747,
+  "viewerSha256": "2985d651ac75fe8486214fc140cb96f1071295054990f60270b70cb68c7bd3bf",
+  "dataSha256": "e20fec9280f8b790ef10207599903e3d8b4c0df2e0043b4a1f61ccc1f0ffa817",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
     "nodes": 8822,
-    "edges": 15687,
+    "edges": 15721,
     "counts": {
-      "resource": 4524,
-      "process": 4298
+      "resource": 4523,
+      "process": 4299
     },
-    "missingCount": 125,
+    "missingCount": 124,
     "unverifiedProcessCount": 17,
-    "totalUnresolvedBoundaries": 142,
+    "totalUnresolvedBoundaries": 141,
     "compact": {
       "nodes": 8642,
-      "edges": 15507
+      "edges": 15541
     },
     "truncated": false,
     "depth": "all"
@@ -77,15 +77,15 @@
     "boundedIngredientGraphCache": true
   },
   "stagedPayload": {
-    "fullResources": 43983,
-    "fullRecipes": 38738,
-    "initialResources": 21366,
-    "initialRecipes": 10535,
-    "initialDecodedBytes": 53373402,
-    "fullDecodedBytes": 124074533,
-    "initialDecodedReductionPercent": 56.98,
-    "initialGzipBase64Bytes": 5706628,
-    "fullGzipBase64Bytes": 35419624,
+    "fullResources": 43986,
+    "fullRecipes": 38747,
+    "initialResources": 21376,
+    "initialRecipes": 10540,
+    "initialDecodedBytes": 53446438,
+    "fullDecodedBytes": 124150981,
+    "initialDecodedReductionPercent": 56.95,
+    "initialGzipBase64Bytes": 5720960,
+    "fullGzipBase64Bytes": 35435140,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
@@ -96,13 +96,13 @@
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 43983,
+    "resourceDenominator": 43986,
     "resourceCoverage": {
       "asset": 24580,
       "fallback": 17454,
-      "representative": 1949
+      "representative": 1952
     },
-    "machineDenominator": 372,
+    "machineDenominator": 378,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
