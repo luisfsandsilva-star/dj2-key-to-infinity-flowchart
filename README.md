@@ -1,8 +1,8 @@
 # Key to Infinity · Divine Journey 2 2.23.4
 
-[Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r27) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261031-r27)
+[Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r28) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261031-r28)
 
-Public preview **r27**. The previously verified primary route is preserved: **4 unresolved initial-stock boundaries** remain unchanged from r26. The map remains incomplete.
+Public preview **r28**. The selected route has **3 unresolved initial-stock boundaries**, down from four in r27. The map remains incomplete.
 
 - **Full chain to Key** opens the complete selected ingredient chain without a depth or node cap.
 - Search any item, fluid or process, then inspect its recipe and ingredient branches.
@@ -10,18 +10,19 @@ Public preview **r27**. The previously verified primary route is preserved: **4 
 - Focus fades nodes outside the selected connections. Icons, labels and connections remain visible farther out; icon animation can be toggled.
 - The quantity planner uses whole recipe batches, retained tools, selected alternatives and stated yields. Inventory progress stays in the current browser.
 
-This update adds **46 paid catalogue recipe and progress rows** across six source groups. These are inspectable alternatives; they do not establish a complete first-machine bootstrap.
+This update adds **24 paid catalogue rows** across six source groups and selects a native Electrotine meteor alternative. Every new physical expedition, harvest or meteor output has **zero guaranteed yield**; no fixed number of attempts promises success.
 
-- A conditional paid Spire/Warden expedition can return a Primordial Pearl only after its required raid, qualified native pickup and living return. The expedition, travel, equipment and site conditions remain paid.
-- The native Transposer can fill a Biodiesel Bucket using actual Biodiesel, an empty Bucket, a fresh paid machine and RF. A paid stone Pickaxe Head supplies the starting part for the casting mold; native Stencil Table and Part Builder crafts retain their actual ingredients.
-- Dimensional Shard and Electrotine EMC transmutations require paid stored EMC, an actual retained transmutation instrument and Full ProjectE Knowledge. They do not grant first knowledge or initial ore stock.
-- Quest 1024 can yield **four Draconic Cores once per owner and world**, only after its full paid prerequisite/task history and actual native claim. Four Cores are finite stock, not the **180 ordinary Cores** lower bound audited for the six-frame first-machine branch. All other ingredients and operating requirements remain necessary.
+- **Electrotine Ore:** pay a complete Blood Magic potency-meteor attempt, including **1,000,000 LP in the same owner’s Master-capacity network**, 100 distinct Ritual Stones, the other ritual tools, catalyst, food, safe site and fresh Silk Drill. The native Electrotine selection uses **100 of 1,040 random draws per eligible cell**. This is not an overall meteor or expedition success chance. Only an actual native ore placement, qualified silk harvest, owned pickup and living return receive credit.
+- **Enderman Skull:** the ordinary Iron Sword route retains its full paid hunt, natural Overworld actor, real player kill, native event conditions and living return. Its **2.5% qualified native skull roll** is not a guaranteed outcome or the overall hunt success chance. No Ender sword or charged weapon is donated.
+- **Raw Sky Stone:** a separate paid Atum portal and expedition kit, plus a fresh Diamond Pickaxe, can return four actual raw Sky Stone blocks from a naturally generated Recurrent Complex meteor. Placement, normal drops, owned pickup and survival remain required. Its guaranteed yield is zero. Any conversion to Smooth Sky Stone needs separate ordinary smelting and fuel; those outputs are not bundled into this receipt.
 
-The primary selection keeps the verified r26 choices through strict current-candidate validation (validator 165), with no optimizer substitution. Newly added catalogue branches remain searchable and available to the quantity planner. Structural cycles and finite rewards do not supply their own starting inventory.
+The independent natural-rift expedition pays its own whole site and collapse kit before an actual damage-7 Primordial Pearl pickup and living return; its guaranteed yield remains zero. Finite fragment recipes consume actual owned Pearl states: damage 0, 7 and 8 can supply at most 9, 2 and 1 fragments respectively. Eighteen explicit state and full-life alternatives replace the generic quantity-planner preview; native game wear was already correct and is unchanged. Main-thread and worker planners retain the eligibility guard. Natural Coquina uses its own paid normal-harvest and return route, with zero guaranteed yield and the proved effective Iron tier 2 requirement.
 
-Remaining selected boundaries: Full ProjectE Knowledge, Dimensional Shard Ore, Electrotine Ore and Perfectium Ball. Candidate recipes remain inspectable. An explicit initial-stock boundary requires an actual source or actual owned stock; a connected cycle does not supply its own first item.
+The primary selection is preserved from the complete current choice hint through strict native candidate validation (validator 165), without optimizer substitution. Catalogue alternatives remain searchable and available to the quantity planner. The existing quest 1024 claim remains a catalogue alternative: **four Draconic Cores at most once per owner and world**, after all paid task history and an actual claim. It is **not selected** here and does not establish the **180 ordinary Cores** lower bound for the six-frame first-machine branch.
 
-Selected route: **5,747 resources** and **2,498 verified recipes**. Full ingredient graph: **5,611 nodes**, **10,226 connections**, **4 unresolved boundaries** and **4 structural cycle groups**. A structural cycle does not imply that every member is unobtainable. The catalogue and selected route have different scopes.
+Remaining selected boundaries: Full ProjectE Knowledge, Dimensional Shard Ore and Perfectium Ball. No first source for those three is claimed. An explicit initial-stock boundary needs an actual source or owned stock; a connected cycle does not supply its own first item.
+
+Selected route: **5,778 resources** and **2,512 verified recipes**. Full ingredient graph: **5,635 nodes**, **10,286 connections**, **3 unresolved boundaries** and **4 structural cycle groups**. A structural cycle does not imply that every member is unobtainable. The catalogue and selected route have different scopes.
 
 Selected recipe bodies, native ingredient matching, strict route ordering, full graph traversal, offline data reconstruction and all four ZIP members were checked. Native random outcomes, finite rewards, world access and machine conditions remain explicit. Build stages run in series with bounded memory. This update uses the saved successful pack extraction; no new Minecraft execution or visual browser pass was performed.
 
