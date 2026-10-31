@@ -27,4 +27,4 @@ Protected narrative note content is excluded.
 viewer-data.json.gz contains the complete unchanged filtered data reconstructed from the HTML chunks.
 status.json records the version, scope, counts and hashes for package verification.
 
-Full ingredient graph: 8822 nodes and 15721 connections; 124 resource boundaries and 17 unverified process previews. These include catalogue branches beyond the core selected route. A connected preview does not establish that its output is obtainable.
+Full ingredient graph: 8857 nodes and 15863 connections; 115 resource boundaries and 16 unverified process previews. These include catalogue branches beyond the core selected route. A connected preview does not establish that its output is obtainable.

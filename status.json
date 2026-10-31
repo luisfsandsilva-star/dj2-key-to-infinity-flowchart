@@ -7,7 +7,7 @@
   "completeDependencyClosure": false,
   "runId": "20261026-001256",
   "routeSummary": {
-    "candidateStacksExamined": 27690,
+    "candidateStacksExamined": 27717,
     "selectedStacks": 5356,
     "selectedRecipes": 2313,
     "selectedAlternatives": 1022,
@@ -18,7 +18,7 @@
     "provenAcquisitionLeaves": 103,
     "selectedAcquisitionProcesses": 55,
     "unprovenLeaves": 13,
-    "cyclicCandidateStacks": 4744,
+    "cyclicCandidateStacks": 4771,
     "selectedPartialRecipes": 0,
     "selectedUnresolvedRegistryRecipes": 0,
     "recipesWithConditions": 1007,
@@ -28,24 +28,24 @@
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 43986,
-  "catalogRecipes": 38747,
-  "viewerSha256": "2985d651ac75fe8486214fc140cb96f1071295054990f60270b70cb68c7bd3bf",
-  "dataSha256": "e20fec9280f8b790ef10207599903e3d8b4c0df2e0043b4a1f61ccc1f0ffa817",
+  "catalogResources": 43998,
+  "catalogRecipes": 38803,
+  "viewerSha256": "7f1946114860906b217b75c58be64222c45e0d54ebac85caf6fc641e1a73849a",
+  "dataSha256": "810c937dd59e5c88ec7a40e8ba6d5b4bf4e3fcc45ffa4345c9d29e90107db06d",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
-    "nodes": 8822,
-    "edges": 15721,
+    "nodes": 8857,
+    "edges": 15863,
     "counts": {
-      "resource": 4523,
-      "process": 4299
+      "resource": 4538,
+      "process": 4319
     },
-    "missingCount": 124,
-    "unverifiedProcessCount": 17,
-    "totalUnresolvedBoundaries": 141,
+    "missingCount": 115,
+    "unverifiedProcessCount": 16,
+    "totalUnresolvedBoundaries": 131,
     "compact": {
-      "nodes": 8642,
-      "edges": 15541
+      "nodes": 8677,
+      "edges": 15683
     },
     "truncated": false,
     "depth": "all"
@@ -77,15 +77,15 @@
     "boundedIngredientGraphCache": true
   },
   "stagedPayload": {
-    "fullResources": 43986,
-    "fullRecipes": 38747,
-    "initialResources": 21376,
-    "initialRecipes": 10540,
-    "initialDecodedBytes": 53446438,
-    "fullDecodedBytes": 124150981,
-    "initialDecodedReductionPercent": 56.95,
-    "initialGzipBase64Bytes": 5720960,
-    "fullGzipBase64Bytes": 35435140,
+    "fullResources": 43998,
+    "fullRecipes": 38803,
+    "initialResources": 21497,
+    "initialRecipes": 10599,
+    "initialDecodedBytes": 53803537,
+    "fullDecodedBytes": 124412699,
+    "initialDecodedReductionPercent": 56.75,
+    "initialGzipBase64Bytes": 5775736,
+    "fullGzipBase64Bytes": 35477960,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
@@ -96,13 +96,13 @@
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 43986,
+    "resourceDenominator": 43998,
     "resourceCoverage": {
-      "asset": 24580,
+      "asset": 24592,
       "fallback": 17454,
       "representative": 1952
     },
-    "machineDenominator": 378,
+    "machineDenominator": 392,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
