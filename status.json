@@ -7,7 +7,7 @@
   "completeDependencyClosure": false,
   "runId": "20261026-001256",
   "routeSummary": {
-    "candidateStacksExamined": 27762,
+    "candidateStacksExamined": 27813,
     "selectedStacks": 5747,
     "selectedRecipes": 2498,
     "selectedAlternatives": 1070,
@@ -18,7 +18,7 @@
     "provenAcquisitionLeaves": 103,
     "selectedAcquisitionProcesses": 56,
     "unprovenLeaves": 4,
-    "cyclicCandidateStacks": 3638,
+    "cyclicCandidateStacks": 3472,
     "selectedPartialRecipes": 0,
     "selectedUnresolvedRegistryRecipes": 0,
     "recipesWithConditions": 1079,
@@ -28,10 +28,10 @@
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 44041,
-  "catalogRecipes": 38860,
-  "viewerSha256": "eff1e75742aee56d9e662e56b3a367ab1f11660309f0937bac5ba6cac4fd3d88",
-  "dataSha256": "0b690ab30cf7d4953f6186c811ca48f59619fad422c22cd9a7157d520f647b65",
+  "catalogResources": 44083,
+  "catalogRecipes": 38908,
+  "viewerSha256": "81eb5d2566b490fad7a7cb4220f7df7bc517fbffa6bc98d9956ae425802f3e16",
+  "dataSha256": "b892439bf7345308fb1504debfb5e2be99008078a7e861a56cb70f099b2c7355",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
     "nodes": 5611,
@@ -85,32 +85,32 @@
     "ownedStockResolvesBootstrapShortages": true
   },
   "stagedPayload": {
-    "fullResources": 44041,
-    "fullRecipes": 38860,
-    "initialResources": 21540,
-    "initialRecipes": 10638,
-    "initialDecodedBytes": 54152604,
-    "fullDecodedBytes": 124821561,
-    "initialDecodedReductionPercent": 56.62,
-    "initialGzipBase64Bytes": 5860376,
-    "fullGzipBase64Bytes": 35589960,
+    "fullResources": 44083,
+    "fullRecipes": 38908,
+    "initialResources": 21541,
+    "initialRecipes": 10642,
+    "initialDecodedBytes": 54201430,
+    "fullDecodedBytes": 125018288,
+    "initialDecodedReductionPercent": 56.65,
+    "initialGzipBase64Bytes": 5873216,
+    "fullGzipBase64Bytes": 35617488,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
-      "catalogChunks": 324,
+      "catalogChunks": 325,
       "iconChunks": 178,
       "animationChunks": 176
     },
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 44041,
+    "resourceDenominator": 44083,
     "resourceCoverage": {
       "asset": 24600,
-      "fallback": 17460,
-      "representative": 1981
+      "fallback": 17500,
+      "representative": 1983
     },
-    "machineDenominator": 421,
+    "machineDenominator": 469,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }

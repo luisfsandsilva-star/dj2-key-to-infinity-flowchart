@@ -1,8 +1,8 @@
 # Key to Infinity · Divine Journey 2 2.23.4
 
-[Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r26) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261031-r26)
+[Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r27) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261031-r27)
 
-Public preview **r26**. The selected route has **4 unresolved initial-stock boundaries**, down from five in r25. The map remains incomplete.
+Public preview **r27**. The previously verified primary route is preserved: **4 unresolved initial-stock boundaries** remain unchanged from r26. The map remains incomplete.
 
 - **Full chain to Key** opens the complete selected ingredient chain without a depth or node cap.
 - Search any item, fluid or process, then inspect its recipe and ingredient branches.
@@ -10,9 +10,14 @@ Public preview **r26**. The selected route has **4 unresolved initial-stock boun
 - Focus fades nodes outside the selected connections. Icons, labels and connections remain visible farther out; icon animation can be toggled.
 - The quantity planner uses whole recipe batches, retained tools, selected alternatives and stated yields. Inventory progress stays in the current browser.
 
-This update adds the native Enchanter batch: **8 Iron Ingots + 1 Nether Star → 8 Evil Infused Iron Ingots**, costing **64,000 FE** over **1,600 active ticks** at normal speed. The existing paid Enchanter and fifteen Bookshelves are retained. Evil Infused Iron is metadata 17; Demon Ingot is metadata 11 and remains a different ingredient.
+This update adds **46 paid catalogue recipe and progress rows** across six source groups. These are inspectable alternatives; they do not establish a complete first-machine bootstrap.
 
-The selected iodine route now dissolves Evil Infused Iron into Lead Iodide, then dissolves that into Iodine. The Lead Iodide outcome has a 50% chance. No fixed number of attempts guarantees it. This alternative removes the selected first-Bohrium cycle while keeping all other ingredient, power and operating requirements.
+- A conditional paid Spire/Warden expedition can return a Primordial Pearl only after its required raid, qualified native pickup and living return. The expedition, travel, equipment and site conditions remain paid.
+- The native Transposer can fill a Biodiesel Bucket using actual Biodiesel, an empty Bucket, a fresh paid machine and RF. A paid stone Pickaxe Head supplies the starting part for the casting mold; native Stencil Table and Part Builder crafts retain their actual ingredients.
+- Dimensional Shard and Electrotine EMC transmutations require paid stored EMC, an actual retained transmutation instrument and Full ProjectE Knowledge. They do not grant first knowledge or initial ore stock.
+- Quest 1024 can yield **four Draconic Cores once per owner and world**, only after its full paid prerequisite/task history and actual native claim. Four Cores are finite stock, not the **180 ordinary Cores** lower bound audited for the six-frame first-machine branch. All other ingredients and operating requirements remain necessary.
+
+The primary selection keeps the verified r26 choices through strict current-candidate validation (validator 165), with no optimizer substitution. Newly added catalogue branches remain searchable and available to the quantity planner. Structural cycles and finite rewards do not supply their own starting inventory.
 
 Remaining selected boundaries: Full ProjectE Knowledge, Dimensional Shard Ore, Electrotine Ore and Perfectium Ball. Candidate recipes remain inspectable. An explicit initial-stock boundary requires an actual source or actual owned stock; a connected cycle does not supply its own first item.
 
