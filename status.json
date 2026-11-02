@@ -7,56 +7,56 @@
   "completeDependencyClosure": false,
   "runId": "20261026-001256",
   "routeSummary": {
-    "candidateStacksExamined": 27826,
-    "selectedStacks": 5778,
-    "selectedRecipes": 2512,
-    "selectedAlternatives": 1073,
-    "selectedSemanticMatches": 2031,
-    "selectedWildcardMatches": 29,
-    "selectedTaggedVariantMatches": 103,
+    "candidateStacksExamined": 27862,
+    "selectedStacks": 5752,
+    "selectedRecipes": 2617,
+    "selectedAlternatives": 985,
+    "selectedSemanticMatches": 1994,
+    "selectedWildcardMatches": 37,
+    "selectedTaggedVariantMatches": 104,
     "selectedAspectCrystalAliases": 0,
-    "provenAcquisitionLeaves": 103,
-    "selectedAcquisitionProcesses": 56,
+    "provenAcquisitionLeaves": 96,
+    "selectedAcquisitionProcesses": 57,
     "unprovenLeaves": 3,
-    "cyclicCandidateStacks": 2081,
+    "cyclicCandidateStacks": 2079,
     "selectedPartialRecipes": 0,
     "selectedUnresolvedRegistryRecipes": 0,
-    "recipesWithConditions": 1086,
-    "recipesWithRequirements": 1567,
+    "recipesWithConditions": 1130,
+    "recipesWithRequirements": 1652,
     "oreSnapshotImported": true,
     "explicitAcquisitionRecordsAccepted": 215,
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 44092,
-  "catalogRecipes": 38948,
-  "viewerSha256": "66adbefdf4636b19d6a8cef75b99af1ecd7c5fedd8e387055eb17cd6fed1a064",
-  "dataSha256": "8594cfe05a0a2100b42f8a6bd048b4199f8d534207b9f906449e05af70dbb2b5",
+  "catalogResources": 44025,
+  "catalogRecipes": 38899,
+  "viewerSha256": "02ae60f3f53cea694917ddfe8fec35381edc6964cb854046783bb0c8677f05d6",
+  "dataSha256": "b9c8c33c6575cddce908bc4ec7349a3b060fc805d0e11176074d618eb50f1175",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
-    "nodes": 5635,
-    "edges": 10286,
+    "nodes": 5862,
+    "edges": 10889,
     "counts": {
-      "resource": 2854,
-      "process": 2781
+      "resource": 2973,
+      "process": 2889
     },
     "missingCount": 3,
     "unverifiedProcessCount": 0,
     "totalUnresolvedBoundaries": 3,
     "compact": {
-      "nodes": 5481,
-      "edges": 10128
+      "nodes": 5696,
+      "edges": 10719
     },
     "truncated": false,
     "depth": "all",
     "bootstrapBoundaryCount": 3,
-    "cycleGroupCount": 4,
+    "cycleGroupCount": 3,
     "groupsWithKnownBootstrapBoundariesCount": 2,
     "complete": false,
     "completionStatus": "pending-initial-stock-or-verification"
   },
   "iconAnimation": {
-    "uniqueAnimations": 823,
+    "uniqueAnimations": 816,
     "staticFallback": true,
     "visibleIconsOnly": true,
     "motionToggle": true
@@ -85,32 +85,32 @@
     "ownedStockResolvesBootstrapShortages": true
   },
   "stagedPayload": {
-    "fullResources": 44092,
-    "fullRecipes": 38948,
-    "initialResources": 21549,
-    "initialRecipes": 10656,
-    "initialDecodedBytes": 54343124,
-    "fullDecodedBytes": 125235931,
-    "initialDecodedReductionPercent": 56.61,
-    "initialGzipBase64Bytes": 5921064,
-    "fullGzipBase64Bytes": 35664180,
+    "fullResources": 44025,
+    "fullRecipes": 38899,
+    "initialResources": 21561,
+    "initialRecipes": 10632,
+    "initialDecodedBytes": 55126827,
+    "fullDecodedBytes": 125618026,
+    "initialDecodedReductionPercent": 56.12,
+    "initialGzipBase64Bytes": 5971648,
+    "fullGzipBase64Bytes": 35573488,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
-      "catalogChunks": 325,
-      "iconChunks": 178,
-      "animationChunks": 176
+      "catalogChunks": 324,
+      "iconChunks": 177,
+      "animationChunks": 175
     },
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 44092,
+    "resourceDenominator": 44025,
     "resourceCoverage": {
-      "asset": 24600,
-      "fallback": 17505,
-      "representative": 1987
+      "asset": 24630,
+      "fallback": 17508,
+      "representative": 1887
     },
-    "machineDenominator": 506,
+    "machineDenominator": 557,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
