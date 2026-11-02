@@ -7,7 +7,7 @@
   "completeDependencyClosure": false,
   "runId": "20261026-001256",
   "routeSummary": {
-    "candidateStacksExamined": 27862,
+    "candidateStacksExamined": 27880,
     "selectedStacks": 5752,
     "selectedRecipes": 2617,
     "selectedAlternatives": 985,
@@ -28,10 +28,10 @@
     "rejectedAcquisitionRecords": 0,
     "unsupportedWildcardOutputs": 0
   },
-  "catalogResources": 44025,
-  "catalogRecipes": 38900,
-  "viewerSha256": "bdcd8c7b2102168d6bfaf69c2f5580a10448aecbc8596d4504bc5ad7ec5d4322",
-  "dataSha256": "dc9bbed678e428c0caa4bdf5c010f7e93b7145d632000fc7ddc60b80f2669414",
+  "catalogResources": 44028,
+  "catalogRecipes": 38905,
+  "viewerSha256": "97eee0233430fb44c2deb7a3c21bdacaf1edadec15df8d0d61309a7c5baed805",
+  "dataSha256": "7ba1d1a6951ce5fae2f5410a15ed255d9228b5bd646fd8a4b240ceec11314528",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
     "nodes": 5862,
@@ -85,15 +85,15 @@
     "ownedStockResolvesBootstrapShortages": true
   },
   "stagedPayload": {
-    "fullResources": 44025,
-    "fullRecipes": 38900,
-    "initialResources": 21561,
-    "initialRecipes": 10633,
-    "initialDecodedBytes": 55135510,
-    "fullDecodedBytes": 125626176,
-    "initialDecodedReductionPercent": 56.11,
-    "initialGzipBase64Bytes": 5975000,
-    "fullGzipBase64Bytes": 35577296,
+    "fullResources": 44028,
+    "fullRecipes": 38905,
+    "initialResources": 21564,
+    "initialRecipes": 10636,
+    "initialDecodedBytes": 55184215,
+    "fullDecodedBytes": 125674435,
+    "initialDecodedReductionPercent": 56.09,
+    "initialGzipBase64Bytes": 5985376,
+    "fullGzipBase64Bytes": 35590008,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
@@ -104,13 +104,13 @@
     "losslessReconstruction": true
   },
   "iconCoverage": {
-    "resourceDenominator": 44025,
+    "resourceDenominator": 44028,
     "resourceCoverage": {
-      "asset": 24630,
+      "asset": 24633,
       "fallback": 17508,
       "representative": 1887
     },
-    "machineDenominator": 558,
+    "machineDenominator": 563,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
