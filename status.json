@@ -29,9 +29,9 @@
     "unsupportedWildcardOutputs": 0
   },
   "catalogResources": 44025,
-  "catalogRecipes": 38899,
-  "viewerSha256": "02ae60f3f53cea694917ddfe8fec35381edc6964cb854046783bb0c8677f05d6",
-  "dataSha256": "b9c8c33c6575cddce908bc4ec7349a3b060fc805d0e11176074d618eb50f1175",
+  "catalogRecipes": 38900,
+  "viewerSha256": "5ca784eb273b2a0f83f8b120d17be10e24f5391e2937f7cb5011972aac9a5176",
+  "dataSha256": "689f6a5286e732609944b6576829937075576067e9e3b6167e2ae36f08779e44",
   "sourceRelease": "https://github.com/Divine-Journey-2/Divine-Journey-2/releases/tag/2.23.4",
   "fullIngredientGraph": {
     "nodes": 5862,
@@ -86,14 +86,14 @@
   },
   "stagedPayload": {
     "fullResources": 44025,
-    "fullRecipes": 38899,
+    "fullRecipes": 38900,
     "initialResources": 21561,
-    "initialRecipes": 10632,
-    "initialDecodedBytes": 55126827,
-    "fullDecodedBytes": 125618026,
-    "initialDecodedReductionPercent": 56.12,
-    "initialGzipBase64Bytes": 5971648,
-    "fullGzipBase64Bytes": 35573488,
+    "initialRecipes": 10633,
+    "initialDecodedBytes": 55135165,
+    "fullDecodedBytes": 125625831,
+    "initialDecodedReductionPercent": 56.11,
+    "initialGzipBase64Bytes": 5974888,
+    "fullGzipBase64Bytes": 35577040,
     "initialDecodedStaticImages": 0,
     "initialDecodedAnimations": 0,
     "chunkCounts": {
@@ -110,7 +110,7 @@
       "fallback": 17508,
       "representative": 1887
     },
-    "machineDenominator": 557,
+    "machineDenominator": 558,
     "fallbackIsExplicit": true,
     "allResourceAndMachineReferencesResolve": true
   }
