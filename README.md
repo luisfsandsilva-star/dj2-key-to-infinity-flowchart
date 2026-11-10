@@ -1,5 +1,8 @@
 # Divine Journey 2 — Key to Infinity dependency map
 
+
+**New: DJ2 2.21.4 preview** — [open the 2.21.4 viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/2.21.4/?v=r490). First map rebuilt for pack 2.21.4 from its scripts and mod files (1,743 resources, 1,222 recipes from Key to Infinity down). It is marked *source reconstructed · incomplete*: recipes are not yet checked against the in-game registry, 463 resources have no producer yet (mostly world materials and native machine recipes), and 13 user add-on mods are excluded from progression. The 2.23.4 map below is unchanged.
+
 [Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r33) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261102-r33)
 
 Public preview **r33** adds five verified mechanical process rows: actual Dreadlands ritual-site conversion, actual living Cow transport, both **Altar of Cha'garoth** infusions and the **Dread-Plagued Gateway Key** from the original lair/spawner/boss. The selected root route remains incomplete with **3 unresolved boundaries**: Perfectium Ball, full ProjectE knowledge and the exact UB Dimensional Shard Ore query. None is treated as owned stock. Other catalogue branches can still have unresolved upstream dependencies.
