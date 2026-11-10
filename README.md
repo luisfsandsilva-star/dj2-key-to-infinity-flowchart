@@ -1,7 +1,7 @@
 # Divine Journey 2 — Key to Infinity dependency map
 
 
-**New: DJ2 2.21.4 preview** — [open the 2.21.4 viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/2.21.4/?v=r490). First map rebuilt for pack 2.21.4 from its scripts and mod files (1,743 resources, 1,222 recipes from Key to Infinity down). It is marked *source reconstructed · incomplete*: recipes are not yet checked against the in-game registry, 463 resources have no producer yet (mostly world materials and native machine recipes), and 13 user add-on mods are excluded from progression. The 2.23.4 map below is unchanged.
+**New: DJ2 2.21.4 preview** — [open the 2.21.4 viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/2.21.4/?v=r491). Map for pack 2.21.4: 2,227 resources and 1,791 recipes from Key to Infinity down. 1,294 recipes were observed in a registry export from an isolated 2.21.4 server; the rest are reconstructed from the pack scripts. Where several recipes exist, the cheapest-looking one is shown automatically. Marked *incomplete*: 377 resources have no producer yet (99 of them are world materials), and 13 user add-on mods are excluded. The 2.23.4 map below is unchanged.
 
 [Open the interactive viewer](https://luisfsandsilva-star.github.io/dj2-key-to-infinity-flowchart/?v=r33) · [Download the offline ZIP](https://github.com/luisfsandsilva-star/dj2-key-to-infinity-flowchart/releases/tag/dj2-2.23.4-preview-20261102-r33)
 
